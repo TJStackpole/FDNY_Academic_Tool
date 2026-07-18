@@ -1,0 +1,1422 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FDNY Promotion Exam Prep — Study Console</title>
+<meta name="description" content="Adaptive study tool for FDNY Lieutenant, Captain, Battalion Chief, and Deputy Chief promotion exams: personalized dashboard, learner profiling, adaptive study plans, flashcards, practice tests, daily quizzes, decision scenarios, an AI study assistant, a podcast studio, diagrams, and a reference library." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#0B0E13; --bg-elev:#12171F; --bg-elev-2:#1A212C; --bg-elev-3:#232C3A;
+  --line:#222B39; --line-strong:#33404F;
+  --text:#E7ECF3; --text-dim:#93A0B4; --text-faint:#5D6B7E;
+  --red:#E4272E; --red-dk:#A2141B; --amber:#F5A623; --green:#35C46B; --cyan:#2FC6D4; --violet:#8B7BF0; --gold:#E9C46A;
+  --radius:10px; --radius-sm:6px;
+  --font-display:'Oswald','Arial Narrow',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,-apple-system,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:radial-gradient(1200px 600px at 82% -12%,rgba(228,39,46,.07),transparent 60%),var(--bg);
+  color:var(--text);font-family:var(--font-body);-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.55}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:8px}
+a{color:var(--cyan)}
+button{font:inherit}
+.eyebrow{font-family:var(--font-display);text-transform:uppercase;letter-spacing:.18em;font-weight:600;font-size:11px;color:var(--text-faint)}
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.signage{font-family:var(--font-display);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+
+.app{display:grid;grid-template-columns:250px 1fr;grid-template-rows:auto 1fr;
+  grid-template-areas:"topbar topbar" "nav main";height:100vh}
+
+/* Topbar */
+.topbar{grid-area:topbar;display:flex;align-items:center;gap:16px;padding:11px 20px;
+  background:linear-gradient(180deg,#10151d,#0c1017);border-bottom:1px solid var(--line)}
+.topbar__emblem{width:42px;height:42px;flex:none}
+.topbar__titles h1{margin:0;font-family:var(--font-display);text-transform:uppercase;letter-spacing:.05em;font-size:18px;font-weight:700}
+.topbar__titles h1 span{color:var(--red)}
+.topbar__sub{font-size:11px;color:var(--text-dim)}
+.topbar__right{margin-left:auto;display:flex;align-items:center;gap:14px}
+.rank-select{display:flex;background:var(--bg-elev);border:1px solid var(--line-strong);border-radius:999px;padding:3px}
+.rank-select button{background:transparent;border:none;color:var(--text-dim);padding:6px 13px;border-radius:999px;cursor:pointer;
+  font-family:var(--font-display);text-transform:uppercase;letter-spacing:.05em;font-size:12px;font-weight:600}
+.rank-select button.on{background:var(--red);color:#fff}
+.streak{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text-dim);background:var(--bg-elev);
+  border:1px solid var(--line-strong);border-radius:999px;padding:6px 12px}
+.streak b{font-family:var(--font-mono);color:var(--amber);font-size:14px}
+.iconbtn{background:var(--bg-elev);border:1px solid var(--line-strong);color:var(--text-dim);width:36px;height:36px;
+  border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.iconbtn:hover{border-color:var(--red);color:var(--text)}
+.iconbtn svg{width:18px;height:18px}
+
+/* Nav */
+.nav{grid-area:nav;background:var(--bg-elev);border-right:1px solid var(--line);overflow-y:auto;padding:10px 8px}
+.nav__group{margin:6px 6px 12px}
+.nav__label{font-size:9.5px;text-transform:uppercase;letter-spacing:.14em;color:var(--text-faint);padding:8px 8px 4px}
+.nav a{display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:var(--radius-sm);color:var(--text-dim);
+  text-decoration:none;font-size:13.5px;font-weight:500;border:1px solid transparent;margin-bottom:2px}
+.nav a:hover{background:var(--bg-elev-2);color:var(--text)}
+.nav a.on{background:var(--bg-elev-2);color:var(--text);border-color:var(--red)}
+.nav a svg{width:18px;height:18px;flex:none;color:inherit}
+.nav a .badge{margin-left:auto;font-family:var(--font-mono);font-size:10px;color:var(--amber);background:rgba(245,166,35,.12);padding:1px 6px;border-radius:5px}
+.nav a .dot-ai{margin-left:auto;font-size:9px;color:var(--violet);background:rgba(139,123,240,.14);padding:1px 6px;border-radius:5px;font-family:var(--font-mono)}
+
+/* Main */
+.main{grid-area:main;overflow-y:auto;padding:24px 30px 70px}
+.view{max-width:1080px}
+.page-head{margin-bottom:6px}
+.page-head h2{margin:0;font-family:var(--font-display);text-transform:uppercase;letter-spacing:.03em;font-size:26px;font-weight:700}
+.page-head p{margin:4px 0 0;color:var(--text-dim);max-width:74ch}
+
+.section{margin-top:26px}
+.section__title{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.section__title h3{margin:0;font-family:var(--font-display);text-transform:uppercase;letter-spacing:.08em;font-size:15px;font-weight:600}
+.section__title .rule{flex:1;height:1px;background:var(--line)}
+.section__title .tag{font-family:var(--font-mono);font-size:11px;color:var(--text-faint)}
+
+.panel{background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+
+.tile{background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--radius);padding:16px;cursor:pointer;
+  text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:8px;transition:border-color .12s,transform .12s}
+.tile:hover{border-color:var(--red);transform:translateY(-2px)}
+.tile .ico{width:34px;height:34px;color:var(--red)}
+.tile h4{margin:0;font-family:var(--font-display);text-transform:uppercase;letter-spacing:.03em;font-size:15px}
+.tile p{margin:0;font-size:12px;color:var(--text-dim);line-height:1.5}
+
+.stat{background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--radius);padding:14px 15px;position:relative;overflow:hidden}
+.stat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent,var(--line-strong))}
+.stat .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--text-faint);margin-bottom:8px}
+.stat .val{font-family:var(--font-mono);font-weight:700;font-size:28px;line-height:1}
+.stat .val .u{font-size:12px;color:var(--text-dim);margin-left:3px}
+.stat .foot{margin-top:7px;font-size:11px;color:var(--text-dim)}
+
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--bg-elev-2);border:1px solid var(--line-strong);
+  color:var(--text);padding:9px 15px;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:500}
+.btn:hover{border-color:var(--red)}
+.btn--red{background:var(--red);border-color:var(--red);color:#fff}
+.btn--red:hover{background:var(--red-dk)}
+.btn--violet{background:var(--violet);border-color:var(--violet);color:#fff}
+.btn--ghost{background:transparent}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+.pill{font-family:var(--font-mono);font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;letter-spacing:.03em;white-space:nowrap}
+.pill--green{background:rgba(53,196,107,.14);color:var(--green)} .pill--amber{background:rgba(245,166,35,.14);color:var(--amber)}
+.pill--red{background:rgba(228,39,46,.16);color:#ff6b70} .pill--cyan{background:rgba(47,198,212,.14);color:var(--cyan)}
+.pill--dim{background:var(--bg-elev-2);color:var(--text-dim)} .pill--violet{background:rgba(139,123,240,.16);color:var(--violet)}
+
+label.fld{display:block;margin-bottom:14px}
+label.fld .k{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-faint);margin-bottom:6px}
+input,select,textarea{width:100%;background:var(--bg);border:1px solid var(--line-strong);color:var(--text);
+  border-radius:var(--radius-sm);padding:9px 11px;font:inherit}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--cyan);outline-offset:1px;border-color:var(--cyan)}
+input[type=range]{padding:0}
+textarea{resize:vertical;min-height:90px;line-height:1.6}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--bg-elev-2);border:1px solid var(--line-strong);color:var(--text-dim);border-radius:999px;
+  padding:6px 13px;cursor:pointer;font-size:12.5px;user-select:none}
+.chip.on{background:rgba(228,39,46,.15);border-color:var(--red);color:#ff9ea1}
+
+.notice{display:flex;gap:11px;align-items:flex-start;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.3);
+  border-radius:var(--radius);padding:12px 15px;margin-bottom:18px;font-size:12.5px;color:var(--text-dim)}
+.notice b{color:var(--amber)}
+.notice a{color:var(--amber)}
+.notice code{font-family:var(--font-mono);font-size:11px;background:var(--bg-elev-2);padding:1px 5px;border-radius:4px}
+.notice--ai{background:rgba(139,123,240,.08);border-color:rgba(139,123,240,.3)}
+.notice--ai b{color:var(--violet)}.notice--ai a{color:var(--violet)}
+
+/* Ring */
+.ring-wrap{display:flex;align-items:center;gap:22px}
+.ring-meta .row{display:flex;justify-content:space-between;gap:22px;font-size:12px;margin-bottom:8px}
+.ring-meta .row .k{color:var(--text-dim)} .ring-meta .row .v{font-family:var(--font-mono);font-weight:600}
+
+/* Flashcard */
+.fcard{perspective:1200px;height:240px}
+.fcard__inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d;cursor:pointer}
+.fcard.flip .fcard__inner{transform:rotateY(180deg)}
+.fcard__face{position:absolute;inset:0;backface-visibility:hidden;border:1px solid var(--line-strong);border-radius:var(--radius);
+  padding:26px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:var(--bg-elev)}
+.fcard__face .tp{position:absolute;top:14px;left:16px}
+.fcard__face .hint{position:absolute;bottom:12px;font-size:11px;color:var(--text-faint)}
+.fcard__front{font-size:19px;font-weight:600}
+.fcard__back{transform:rotateY(180deg);background:var(--bg-elev-2);font-size:15px;color:var(--text-dim);line-height:1.6}
+
+/* Quiz */
+.qwrap{max-width:760px}
+.qcard{background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;margin-bottom:14px}
+.qcard .qtext{font-size:16px;font-weight:600;margin:6px 0 16px}
+.choice{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line-strong);border-radius:var(--radius-sm);
+  padding:12px 14px;margin-bottom:9px;cursor:pointer;transition:border-color .1s,background .1s}
+.choice:hover{border-color:var(--cyan)}
+.choice .mk{font-family:var(--font-mono);font-weight:700;color:var(--text-faint)}
+.choice.sel{border-color:var(--cyan);background:rgba(47,198,212,.06)}
+.choice.correct{border-color:var(--green);background:rgba(53,196,107,.09)}
+.choice.wrong{border-color:var(--red);background:rgba(228,39,46,.09)}
+.explain{margin-top:10px;padding:12px 14px;background:var(--bg-elev-2);border-left:3px solid var(--cyan);border-radius:0 var(--radius-sm) var(--radius-sm) 0;font-size:13px;color:var(--text-dim)}
+.progressbar{height:6px;background:var(--bg-elev-2);border-radius:4px;overflow:hidden;margin:6px 0 18px}
+.progressbar>i{display:block;height:100%;background:var(--red);border-radius:4px;transition:width .3s}
+
+/* Reference table */
+.ref{display:flex;align-items:center;gap:14px;padding:13px 15px;border-bottom:1px solid var(--line)}
+.ref:last-child{border-bottom:none}
+.ref .ico{width:22px;height:22px;color:var(--gold);flex:none}
+.ref .meta{flex:1}
+.ref .meta .t{font-weight:600}
+.ref .meta .d{font-size:12px;color:var(--text-dim)}
+
+/* Podcast */
+.pod-script{background:var(--bg);border:1px solid var(--line-strong);border-radius:var(--radius);padding:16px 18px;max-height:360px;overflow:auto;line-height:1.7}
+.pod-script p{margin:0 0 12px;transition:color .2s}
+.pod-script p.now{color:var(--cyan)}
+.pod-script p.seg-head{font-family:var(--font-display);text-transform:uppercase;letter-spacing:.05em;color:var(--amber);font-size:13px}
+.pod-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0}
+
+/* Acronyms */
+.acr{background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--radius);padding:15px 17px}
+.acr h4{margin:0 0 4px;font-family:var(--font-display);letter-spacing:.06em;font-size:20px;color:var(--red)}
+.acr .exp{display:flex;flex-wrap:wrap;gap:6px 14px;margin:10px 0}
+.acr .exp span{font-size:13px}.acr .exp b{color:var(--amber);font-family:var(--font-mono)}
+.acr .use{font-size:12px;color:var(--text-dim)}
+.acr .owner{margin-top:8px;display:flex;gap:8px;align-items:center}
+
+/* Survey */
+.survey-q{background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;margin-bottom:12px}
+.survey-q .q{font-weight:600;margin-bottom:12px}
+.survey-opt{display:block;border:1px solid var(--line-strong);border-radius:var(--radius-sm);padding:10px 13px;margin-bottom:8px;cursor:pointer;font-size:13.5px}
+.survey-opt.sel{border-color:var(--red);background:rgba(228,39,46,.07)}
+
+/* Plan */
+.avail{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:6px}
+.avail .day{background:var(--bg);border:1px solid var(--line-strong);border-radius:var(--radius-sm);padding:8px;text-align:center}
+.avail .day .dn{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-faint);margin-bottom:6px}
+.avail .day input{padding:5px;text-align:center;font-family:var(--font-mono)}
+.session{display:flex;align-items:center;gap:12px;padding:11px 14px;border:1px solid var(--line);border-radius:var(--radius-sm);margin-bottom:8px;background:var(--bg-elev)}
+.session .dot{width:9px;height:9px;border-radius:50%;flex:none}
+.session .when{font-family:var(--font-mono);font-size:12px;color:var(--text-dim);min-width:130px}
+.session .what{flex:1;font-weight:500}
+.session .mod{font-size:11px}
+
+.diagram-card{background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;margin-bottom:16px}
+.diagram-card h4{margin:0 0 4px;font-family:var(--font-display);letter-spacing:.04em;font-size:16px}
+.diagram-card .cap{font-size:12px;color:var(--text-dim);margin-bottom:12px}
+.video-slot{aspect-ratio:16/9;background:var(--bg);border:1px dashed var(--line-strong);border-radius:var(--radius);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--text-faint);text-align:center;padding:16px}
+
+.empty{color:var(--text-dim);text-align:center;padding:40px 20px}
+.heat{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+.heat__tile{background:var(--bg-elev-2);border:1px solid var(--line-strong);border-left:3px solid var(--c);border-radius:var(--radius-sm);
+  padding:11px 12px;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:2px;color:inherit;font:inherit;transition:border-color .12s,transform .12s}
+.heat__tile:hover{transform:translateY(-2px);border-color:var(--c)}
+.heat__tile .ht-acc{font-family:var(--font-mono);font-weight:700;font-size:19px;line-height:1}
+.heat__tile .ht-lbl{font-family:var(--font-display);text-transform:uppercase;letter-spacing:.03em;font-size:12px;color:var(--text)}
+.heat__tile .ht-n{font-family:var(--font-mono);font-size:10px;color:var(--text-faint)}
+.heat-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px}
+.heat-legend span{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--text-dim)}
+.heat-legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.adh{display:flex;gap:4px;flex-wrap:wrap;margin:14px 0 4px}
+.adh__d{width:16px;height:16px;border-radius:4px;background:#232C3A;border:1px solid var(--line-strong)}
+.adh__d.ok{background:var(--green);border-color:var(--green)}
+.adh__d.miss{background:var(--red);border-color:var(--red)}
+.adh__d.off{background:#232C3A;border-color:var(--line)}
+.focus{display:flex;align-items:center;gap:14px;padding:11px 4px;border-bottom:1px solid var(--line)}
+.focus:last-child{border-bottom:none}
+.focus__acc{font-family:var(--font-mono);font-weight:700;font-size:20px;min-width:52px}
+.focus__meta{flex:1}
+.focus__t{font-weight:600}
+.focus__n{font-size:12px;color:var(--text-faint);font-family:var(--font-mono)}
+
+/* AI Assistant chat */
+.chat{display:flex;flex-direction:column;height:calc(100vh - 230px);min-height:420px}
+.chat__log{flex:1;overflow-y:auto;padding:6px 2px;display:flex;flex-direction:column;gap:14px}
+.msg{display:flex;gap:11px;max-width:88%}
+.msg.me{align-self:flex-end;flex-direction:row-reverse}
+.msg__av{width:30px;height:30px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:13px}
+.msg.me .msg__av{background:var(--red);color:#fff}
+.msg.ai .msg__av{background:var(--violet);color:#fff}
+.msg__body{background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--radius);padding:11px 14px;font-size:13.5px;line-height:1.6;white-space:pre-wrap}
+.msg.me .msg__body{background:var(--bg-elev-2);border-color:var(--line-strong)}
+.msg__body .src{margin-top:8px;font-size:11px;color:var(--text-faint);border-top:1px dashed var(--line-strong);padding-top:7px}
+.chat__form{display:flex;gap:10px;margin-top:14px;align-items:flex-end}
+.chat__form textarea{min-height:46px;max-height:150px}
+.typing{display:inline-flex;gap:4px}.typing i{width:6px;height:6px;border-radius:50%;background:var(--violet);animation:tp 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes tp{0%,60%,100%{opacity:.3}30%{opacity:1}}
+
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(5,7,10,.72);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal{background:var(--bg-elev);border:1px solid var(--line-strong);border-radius:var(--radius);max-width:520px;width:100%;padding:22px 24px;max-height:88vh;overflow:auto}
+.modal h3{margin:0 0 4px;font-family:var(--font-display);text-transform:uppercase;letter-spacing:.04em}
+.modal .close{float:right;cursor:pointer;color:var(--text-faint);background:none;border:none;font-size:20px}
+
+@media (max-width:960px){
+  .app{grid-template-columns:1fr;grid-template-areas:"topbar" "nav" "main";grid-template-rows:auto auto 1fr;height:auto}
+  .nav{display:grid;grid-template-columns:repeat(2,1fr);max-height:none}
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .topbar__right{flex-wrap:wrap}
+  .chat{height:auto;min-height:360px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <!-- PLACEHOLDER EMBLEM. The FDNY Maltese cross is a City of New York trademark.
+         Replace this inline <svg> with your own authorized artwork before public use. -->
+    <svg class="topbar__emblem" viewBox="0 0 240 240" aria-label="emblem placeholder">
+      <defs><linearGradient id="st" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F3D27A"/><stop offset="1" stop-color="#C9992F"/></linearGradient>
+      <radialGradient id="cr" cx=".5" cy=".4" r=".75"><stop offset="0" stop-color="#E4272E"/><stop offset="1" stop-color="#A2141B"/></radialGradient></defs>
+      <circle cx="120" cy="120" r="116" fill="#0B0E13"/><circle cx="120" cy="120" r="116" fill="none" stroke="url(#st)" stroke-width="6"/>
+      <g transform="translate(120 120)" stroke="url(#st)" stroke-width="4" stroke-linejoin="round"><path fill="url(#cr)" d="M 0 -88 L 22 -44 L 60 -60 L 44 -22 L 88 0 L 44 22 L 60 60 L 22 44 L 0 88 L -22 44 L -60 60 L -44 22 L -88 0 L -44 -22 L -60 -60 L -22 -44 Z"/></g>
+      <circle cx="120" cy="120" r="30" fill="#0B0E13" stroke="url(#st)" stroke-width="3"/><text x="120" y="128" text-anchor="middle" font-family="Oswald" font-weight="700" font-size="24" fill="#F3D27A">FD</text></svg>
+    <div class="topbar__titles"><h1>FDNY <span>Promotion</span> Prep</h1><div class="topbar__sub">Study console · LT · Capt · BC · DC</div></div>
+    <div class="topbar__right">
+      <div class="rank-select" id="rankSelect"></div>
+      <div class="streak" title="Daily study streak">🔥 <span>Streak</span> <b id="streakVal">0</b></div>
+      <button class="iconbtn" id="settingsBtn" title="Settings & AI key" aria-label="Settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+  </header>
+  <nav class="nav" id="nav"></nav>
+  <main class="main" id="main"></main>
+</div>
+<div id="modalRoot"></div>
+
+<script>
+/* ============================================================
+   FDNY Promotion Exam Prep — single-file study console
+   ------------------------------------------------------------
+   All content marked "sample" is illustrative study material,
+   NOT official FDNY/DCAS content. Replace with your uploaded,
+   AUTHORIZED publications (see Reference Library + content/README.md).
+
+   AI features (Study Assistant + AI podcast scripting) call the
+   Anthropic API. Inside the Claude.ai artifact preview this works
+   automatically. When you HOST this file (e.g. GitHub Pages), add
+   your own Anthropic API key via the Settings gear — it is stored
+   only in your browser's localStorage and sent only to Anthropic.
+   ============================================================ */
+
+/* ---------- guarded persistence (works self-hosted; degrades safely) ---------- */
+const Store=(()=>{
+  const KEY='fdny_prep_v2';let mem={};let ok=true;
+  try{const t='__t';localStorage.setItem(t,'1');localStorage.removeItem(t);}catch(e){ok=false;}
+  function read(){if(!ok)return mem;try{return JSON.parse(localStorage.getItem(KEY))||{};}catch(e){return {};}}
+  function write(o){if(!ok){mem=o;return;}try{localStorage.setItem(KEY,JSON.stringify(o));}catch(e){mem=o;}}
+  return {get(k,d){const o=read();return k in o?o[k]:d;},set(k,v){const o=read();o[k]=v;write(o);},all:read};
+})();
+
+/* ---------- reference / topic taxonomy ----------
+   Topic IDs are stable so bibliography-mapped content plugs in cleanly later. */
+const TOPICS=[
+  {id:'auc',label:'All Units Circulars',short:'AUC'},
+  {id:'engine',label:'Basic Engine Operations',short:'Engine'},
+  {id:'comms',label:'Communications Manual',short:'Comms'},
+  {id:'cfr',label:'Certified First Responder Manual',short:'CFR'},
+  {id:'emergency',label:'Emergency Procedures',short:'Emerg'},
+  {id:'evolutions',label:'Evolutions',short:'Evol'},
+  {id:'ffp',label:'Firefighting Procedures',short:'FFP'},
+  {id:'mmd',label:'Managing Members in Distress',short:'MMD'},
+  {id:'erp',label:'HazMat & Emergency Response Plan',short:'ERP'},
+  {id:'hazmat',label:'Hazmat',short:'Hazmat'},
+  {id:'ics',label:'ICS Manual',short:'ICS'},
+  {id:'ladder',label:'Ladder Company Operations',short:'Ladder'},
+  {id:'marine',label:'Marine Manual',short:'Marine'},
+  {id:'regs',label:'Regulations for the Uniform Force',short:'Regs'},
+  {id:'safety',label:'Safety Bulletins',short:'Safety'},
+  {id:'training',label:'Training Bulletins',short:'Training'},
+  {id:'paids',label:'PA/IDs',short:'PA/ID'},
+  {id:'firecode',label:'NYC Fire Code (2022)',short:'Fire Code'},
+];
+const topicLabel=id=>(TOPICS.find(t=>t.id===id)||{}).label||id;
+const topicShort=id=>(TOPICS.find(t=>t.id===id)||{}).short||id;
+const RANKS=['Lieutenant','Captain','Battalion Chief','Deputy Chief'];
+const RANK_SHORT={'Lieutenant':'LT','Captain':'CAPT','Battalion Chief':'BC','Deputy Chief':'DC'};
+const rankShort=r=>RANK_SHORT[r]||r;
+
+/* Public sources verified online; internal manuals are intranet-only placeholders */
+const REFERENCES=[
+  {title:'NYC Fire Code (2022) — full text',topic:'firecode',status:'public',
+   url:'https://www.nyc.gov/site/fdny/codes/fire-code/fire-code.page',note:'Local Law 47 of 2022, effective Apr 15, 2022. Applies to all ranks.'},
+  {title:'2022 Fire Code Highlight Summary (amendments)',topic:'firecode',status:'public',
+   url:'https://www.nyc.gov/assets/fdny/downloads/pdf/codes/fire-code-highlight-summary.pdf',note:'FDNY summary of the most significant amendments.'},
+  {title:'FDNY Rules — Title 3 RCNY',topic:'regs',status:'public',
+   url:'https://www.nyc.gov/site/fdny/codes/rules/rules.page',note:'Department rules implementing the Fire Code.'},
+  {title:'DCAS Promotion Exam Notices (NOEs)',topic:'regs',status:'public',
+   url:'https://www.nyc.gov/site/dcas/employment/promotion-exam-notice-archive.page',note:'Official notices: format, 50/50 scoring, 70% pass mark, and the bibliography of record.'},
+];
+
+/* ---------- SAMPLE study bank (illustrative — general fire-service knowledge) ---------- */
+const QUESTIONS=[
+  {topic:'ics',rank:['Lieutenant','Captain','Battalion Chief','Deputy Chief'],q:'In the RECEO-VS fireground priority model, what does the first "E" stand for?',
+   choices:['Extinguishment','Exposures','Evacuation','Entry'],answer:1,
+   explain:'RECEO-VS = Rescue, Exposures, Confinement, Extinguishment, Overhaul — Ventilation and Salvage as supporting tactics.'},
+  {topic:'ics',rank:['Lieutenant','Captain','Battalion Chief','Deputy Chief'],q:'A widely used guideline for effective span of control at an incident is approximately:',
+   choices:['1 to 2','3 to 7','8 to 12','15 to 20'],answer:1,
+   explain:'ICS recommends a span of control of roughly 3–7 (optimal 5) reports per supervisor to stay manageable.'},
+  {topic:'training',rank:['Lieutenant','Captain','Battalion Chief','Deputy Chief'],q:'Which building construction type generally presents the HIGHEST risk of early, unpredictable collapse under fire?',
+   choices:['Type I (fire-resistive)','Type III (ordinary)','Type V (wood frame)','Type II (non-combustible)'],answer:2,
+   explain:'Lightweight Type V wood-frame assemblies can fail quickly under fire; know local collapse indicators for each type.'},
+  {topic:'training',rank:['Lieutenant','Captain'],q:'The rapid transition to full-room involvement when all combustibles reach ignition temperature is called:',
+   choices:['Rollover','Backdraft','Flashover','Thermal layering'],answer:2,
+   explain:'Flashover is near-simultaneous ignition of exposed combustibles; rollover often precedes it as a warning sign.'},
+  {topic:'engine',rank:['Lieutenant','Captain'],q:'The primary responsibility of the first-arriving engine company at a structure fire is typically to:',
+   choices:['Perform primary search','Establish a water supply and stretch the initial attack line','Ventilate the roof','Set up RIT'],answer:1,
+   explain:'Engine work centers on water supply and the initial hoseline for confinement and extinguishment.'},
+  {topic:'ladder',rank:['Lieutenant','Captain'],q:'"Forcible entry, search, ventilation, and rescue" are core tasks primarily associated with the:',
+   choices:['Engine company','Ladder (truck) company','Squad only','Safety officer'],answer:1,
+   explain:'Truck/ladder companies own the support tasks that make engine work possible: FE, search, ventilation, rescue, laddering.'},
+  {topic:'hazmat',rank:['Lieutenant','Captain','Battalion Chief','Deputy Chief'],q:'At a hazardous-materials incident, the three primary protective actions to reduce exposure are:',
+   choices:['Time, distance, shielding','Vent, enter, search','Rescue, confine, extinguish','Isolate, dilute, absorb'],answer:0,
+   explain:'Time, distance, and shielding minimize dose/exposure — foundational at HAZMAT and radiological incidents.'},
+  {topic:'hazmat',rank:['Lieutenant','Captain'],q:'The first reference most responders reach for to identify initial isolation and protective-action distances is the:',
+   choices:['NFPA 704 placard only','Emergency Response Guidebook (ERG)','SDS binder','Local phone book'],answer:1,
+   explain:'The ERG provides initial isolation/protective action distances keyed to the material or UN/NA number.'},
+  {topic:'comms',rank:['Lieutenant','Captain','Battalion Chief','Deputy Chief'],q:'A clear, standardized on-scene report that orients incoming units is best delivered as a:',
+   choices:['Personal opinion','Brief initial (size-up) radio report','Silent hand signal','Written memo'],answer:1,
+   explain:'A concise initial radio report (conditions, actions, needs) sets the operational picture for all responding units.'},
+  {topic:'ics',rank:['Captain','Battalion Chief','Deputy Chief'],q:'A declared "Mayday" from a member indicates:',
+   choices:['Routine status update','A firefighter is lost, trapped, or in distress','Fire is under control','Change of shift'],answer:1,
+   explain:'Mayday triggers immediate priority: LUNAR information, RIT activation, and dedicated Mayday communications.'},
+  {topic:'mmd',rank:['Lieutenant'],q:'Before entering an IDLH atmosphere, a member must have:',
+   choices:['Only a flashlight','SCBA in service and a team/partner','A written waiver','A civilian escort'],answer:1,
+   explain:'IDLH operations require respiratory protection in service and team continuity (two-in/two-out principles).'},
+  {topic:'firecode',rank:['Lieutenant','Captain','Battalion Chief','Deputy Chief'],q:'The current edition of the New York City Fire Code in force is the:',
+   choices:['2008 Fire Code','2014 Fire Code','2022 Fire Code','1968 code'],answer:2,
+   explain:'The 2022 Fire Code (Local Law 47 of 2022) took effect April 15, 2022, superseding the 2014 edition.'},
+  {topic:'cfr',rank:['Lieutenant','Captain'],q:'In the CFR-D primary assessment, the priority sequence is best summarized as:',
+   choices:['Airway, Breathing, Circulation','Charting, Billing, Cleanup','Call, Wait, Observe','Splint, Bandage, Transport'],answer:0,
+   explain:'The ABCs — airway, breathing, circulation — drive the primary assessment for a first responder.'},
+  {topic:'regs',rank:['Lieutenant','Captain','Battalion Chief','Deputy Chief'],q:'Command discipline is best described as a tool for:',
+   choices:['Formal criminal prosecution','Handling minor infractions at the unit level','Awarding medals','Scheduling vacations'],answer:1,
+   explain:'Command discipline addresses minor violations locally without a full departmental trial.'},
+];
+
+const FLASHCARDS=[
+  {topic:'ics',front:'RECEO-VS',back:'Rescue · Exposures · Confinement · Extinguishment · Overhaul — Ventilation · Salvage. Classic fireground priority sequence.'},
+  {topic:'ics',front:'Span of control',back:'The number of subordinates one supervisor can effectively manage — about 3 to 7 (5 optimal) under ICS.'},
+  {topic:'training',front:'Five construction types',back:'I Fire-resistive · II Non-combustible · III Ordinary · IV Heavy timber · V Wood frame. Each has distinct collapse behavior under fire.'},
+  {topic:'training',front:'Flashover vs. backdraft',back:'Flashover: simultaneous ignition from radiant heat build-up. Backdraft: explosive re-ignition when oxygen is reintroduced to an oxygen-starved, superheated space.'},
+  {topic:'hazmat',front:'Time / Distance / Shielding',back:'The three ways to reduce exposure/dose at HAZMAT and radiological incidents.'},
+  {topic:'ics',front:'LUNAR',back:'Location · Unit · Name · Assignment · Resources (air) — the report a member gives during a Mayday.'},
+  {topic:'engine',front:'Engine company core role',back:'Secure water supply and stretch/operate the initial attack line for confinement and extinguishment.'},
+  {topic:'ladder',front:'Truck company core tasks',back:'Forcible entry, search & rescue, ventilation, laddering, utility control, overhaul.'},
+  {topic:'firecode',front:'Current NYC Fire Code',back:'2022 Fire Code — Local Law 47 of 2022, effective April 15, 2022 (based on the 2015 International Fire Code).'},
+  {topic:'comms',front:'Initial radio report',back:'Concise size-up: conditions found, actions being taken, and resources needed — orients all incoming units.'},
+];
+
+const SCENARIOS=[
+  {topic:'ics',rank:'Lieutenant',prompt:'You are first-due officer at a 2-story wood-frame private dwelling, heavy smoke from the first floor, a bystander reports two people possibly trapped upstairs. What are your immediate priorities and initial radio report?',
+   keyPoints:['Give a clear initial report: building, conditions, occupancy, actions, needs','Confirm/establish command','Prioritize life safety — coordinate search with engine\'s line placement','Ensure water supply and charged line before/with entry','Account for personnel; call for resources early'],
+   model:'A strong answer establishes command, transmits a concise size-up, and sequences life safety with a coordinated attack — a charged hoseline supporting search, adequate resources requested early, and continuous personnel accountability.'},
+  {topic:'ics',rank:'Captain',prompt:'Mid-operation at a commercial fire, a member transmits a Mayday. As the officer on the interior division, what actions do you take?',
+   keyPoints:['Acknowledge the Mayday; enforce radio discipline','Obtain LUNAR from the member','Activate/assign RIT','Coordinate with IC; consider switching Mayday to a dedicated channel','Maintain operations on remaining members; account for all'],
+   model:'The priority is a controlled Mayday response: acknowledge, gather LUNAR, deploy RIT, protect the frequency, and keep the rest of the operation accountable and coordinated with the IC.'},
+  {topic:'hazmat',rank:'Captain',prompt:'A leaking tanker of unknown product is reported near an occupied building. Describe your initial defensive approach.',
+   keyPoints:['Approach uphill/upwind; establish isolation zones','Use binoculars/ERG to identify before committing','Time, distance, shielding','Evacuate/shelter per ERG protective-action distances','Request HAZMAT and technical resources'],
+   model:'Sound HAZMAT command is deliberate: identify from a distance using the ERG, isolate and deny entry, protect the public with correct distances, and escalate to technical resources before any offensive action.'},
+];
+
+const ACRONYMS=[
+  {acr:'RECEO-VS',topic:'ics',exp:[['R','Rescue'],['E','Exposures'],['C','Confinement'],['E','Extinguishment'],['O','Overhaul'],['V','Ventilation'],['S','Salvage']],use:'Ordering fireground tactical priorities.'},
+  {acr:'SLICE-RS',topic:'ics',exp:[['S','Size-up'],['L','Locate the fire'],['I','Isolate the flow path'],['C','Cool from a safe location'],['E','Extinguish'],['R','Rescue'],['S','Salvage']],use:'Modern sequence emphasizing flow-path control.'},
+  {acr:'COAL WAS WEALTH',topic:'ics',exp:[['C','Construction'],['O','Occupancy'],['A','Apparatus/personnel'],['L','Life hazard'],['W','Water supply'],['A','Auxiliary appliances'],['S','Street conditions'],['W','Weather'],['E','Exposures'],['A','Area'],['L','Location/extent'],['T','Time'],['H','Height/hazards']],use:'Comprehensive size-up checklist.'},
+  {acr:'LCES',topic:'ics',exp:[['L','Lookouts'],['C','Communications'],['E','Escape routes'],['S','Safety zones']],use:'Safety framework, especially wildland/exterior ops.'},
+  {acr:'LUNAR',topic:'ics',exp:[['L','Location'],['U','Unit'],['N','Name'],['A','Assignment'],['R','Resources / air']],use:'Information a member gives during a Mayday.'},
+  {acr:'DECIDE',topic:'hazmat',exp:[['D','Detect the hazard'],['E','Estimate harm'],['C','Choose objectives'],['I','Identify options'],['D','Do the best option'],['E','Evaluate progress']],use:'HAZMAT decision-making model.'},
+  {acr:'BE-SAHF',topic:'training',exp:[['B','Building'],['E','Environment'],['S','Smoke'],['A','Air track'],['H','Heat'],['F','Flame']],use:'Reading fire behavior indicators.'},
+];
+
+/* Podcast talking points per topic (sample) */
+const TOPIC_NOTES={
+  ics:['Command begins with a clear initial size-up and formal establishment of command.','Prioritize life safety, then incident stabilization, then property conservation.','RECEO-VS and SLICE-RS both give you a repeatable order of operations under stress.','Keep span of control between three and seven; build divisions and groups as the incident grows.','A Mayday changes everything: acknowledge it, get LUNAR, launch RIT, and protect the radio channel.'],
+  firecode:['The 2022 New York City Fire Code, Local Law 47 of 2022, took effect April 15, 2022.','It is built on the 2015 International Fire Code with New York City specific amendments.','Major additions address energy storage systems and firefighting in very tall buildings.','Section FC102 governs how new requirements apply to existing buildings and businesses.','Fire Department rules in Title 3 of the Rules of the City of New York implement the code.'],
+  hazmat:['Approach every hazardous materials incident from uphill and upwind.','Identify the product before you commit — the Emergency Response Guidebook is your first tool.','Reduce exposure through time, distance, and shielding.','Establish isolation zones and protective action distances early.','Escalate to technical HAZMAT resources rather than forcing an offensive posture.'],
+  engine:['The engine company owns water: secure supply and stretch the initial attack line.','Correct line selection and placement confine the fire and protect egress and search.','Coordinate the line with ventilation and search to avoid pushing fire onto victims or members.'],
+  ladder:['Truck work makes engine work possible: forcible entry, search, ventilation, and laddering.','Coordinate ventilation with the attack line to control the flow path.','Primary search is driven by life hazard and fire location.'],
+  training:['Know the five construction types and how each behaves and fails under fire.','Lightweight assemblies can fail early and without warning.','Read the fire using building, smoke, air track, heat, and flame indicators.'],
+  comms:['A concise initial radio report orients every incoming unit.','Report conditions found, actions being taken, and resources needed.','Discipline on the radio keeps the operational picture clear for command.'],
+  cfr:['The primary assessment follows the ABCs: airway, breathing, circulation.','Scene safety and BSI precautions come before patient contact.','Rapid recognition and early intervention drive first-responder outcomes.'],
+  regs:['Regulations define conduct, accountability, and the chain of command.','Command discipline resolves minor infractions at the unit level.','Know the documentation and reporting requirements for your rank.'],
+  mmd:['Fundamentals never expire: SCBA discipline, team continuity, and tool readiness.','Never enter an IDLH atmosphere without air in service and a partner.','Mastery of the basics is what officers are expected to enforce.'],
+};
+
+/* ---------- learning-style survey (VARK-style, sample) ---------- */
+const SURVEY=[
+  {q:'When learning a new fireground tactic, you understand it best by…',opts:[['Watching a diagram or animation of it','V'],['Hearing it explained out loud','A'],['Reading the procedure and taking notes','R'],['Physically walking through / drilling it','K']]},
+  {q:'You are studying the Fire Code. You prefer to…',opts:[['See it mapped as a chart or flow','V'],['Listen to a summary while commuting','A'],['Read the section and highlight','R'],['Apply it to a real inspection scenario','K']]},
+  {q:'To remember a complex sequence, you rely on…',opts:[['A picture in your head','V'],['Saying it as a rhythm/phrase','A'],['Writing it repeatedly','R'],['Doing the motions','K']]},
+  {q:'A confusing concept clicks when someone…',opts:[['Draws it','V'],['Talks it through with you','A'],['Gives you something to read','R'],['Lets you try it','K']]},
+  {q:'Your ideal study block includes…',opts:[['Diagrams and color-coded notes','V'],['Podcasts / discussion','A'],['Textbook and written practice','R'],['Scenario drills and practice tests','K']]},
+  {q:'Under exam pressure, you recall best via…',opts:[['Visual layout of the answer','V'],['A remembered explanation','A'],['Key phrases you wrote down','R'],['Muscle memory from repetition','K']]},
+];
+
+/* ---------- helpers ---------- */
+const $=(s,el=document)=>el.querySelector(s);
+const $$=(s,el=document)=>[...el.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const todayKey=()=>new Date().toISOString().slice(0,10);
+const uid=()=>Math.random().toString(36).slice(2,9);
+let MANIFEST=null;
+async function loadManifest(){
+  if(MANIFEST!==null)return MANIFEST;
+  try{const r=await fetch('content/manifest.json',{cache:'no-store'});MANIFEST=r.ok?await r.json():{};}
+  catch(e){MANIFEST={};}
+  return MANIFEST;
+}
+function icon(n){const p={
+  dashboard:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+  survey:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+  plan:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M8 14h4"/>',
+  library:'<path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2z"/><path d="M8 3v18"/>',
+  cards:'<rect x="3" y="6" width="14" height="14" rx="2"/><path d="M7 6V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v12"/>',
+  practice:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3h6v3H9zM8 12l2 2 4-4"/>',
+  quiz:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',
+  scenario:'<path d="M21 12a8 8 0 0 1-11.5 7.2L4 21l1.8-5.5A8 8 0 1 1 21 12z"/>',
+  podcast:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',
+  diagrams:'<circle cx="7" cy="7" r="3"/><rect x="14" y="4" width="6" height="6" rx="1"/><path d="M6 14l4 6H2z"/>',
+  acronyms:'<path d="M4 7h16M4 12h16M4 17h10"/>',
+  assistant:'<path d="M12 2a7 7 0 0 1 7 7c0 3-2 5-2 7H7c0-2-2-4-2-7a7 7 0 0 1 7-7z"/><path d="M9 20h6M10 23h4"/>',
+  code:'<path d="M8 8l-4 4 4 4M16 8l4 4-4 4M13 6l-2 12"/>'};
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p[n]||''}</svg>`;}
+function ringSVG(pct,label,size=128){
+  const s=12,r=(size-s)/2,c=2*Math.PI*r,cls=pct>=.75?'green':pct>=.5?'amber':'red',col=`var(--${cls})`;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="flex:none">
+   <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="#1c2431" stroke-width="${s}"/>
+   <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${col}" stroke-width="${s}" stroke-linecap="round"
+     stroke-dasharray="${c}" stroke-dashoffset="${c*(1-pct)}" transform="rotate(-90 ${size/2} ${size/2})"/>
+   <text x="50%" y="46%" text-anchor="middle" fill="${col}" font-family="JetBrains Mono" font-weight="700" font-size="26">${Math.round(pct*100)}</text>
+   <text x="50%" y="62%" text-anchor="middle" fill="#5D6B7E" font-family="Oswald" font-size="10" letter-spacing="1.5">${label}</text></svg>`;}
+
+/* ---------- global state ---------- */
+let RANK=Store.get('rank','Lieutenant');
+
+/* ---------- readiness / progress ---------- */
+function progress(){return Store.get('progress',{answered:0,correct:0,byTopic:{},quizDays:[],known:{}});}
+function saveProgress(p){Store.set('progress',p);}
+function readiness(){
+  const p=progress();
+  const acc=p.answered?p.correct/p.answered:0;
+  const coverage=Math.min(1,Object.keys(p.byTopic).length/TOPICS.length);
+  const volume=Math.min(1,p.answered/120);
+  return Math.max(0,Math.min(1,acc*0.5+coverage*0.25+volume*0.25));
+}
+function streak(){
+  const days=(progress().quizDays||[]).slice().sort();
+  if(!days.length)return 0;let s=0;let d=new Date();
+  for(;;){const k=d.toISOString().slice(0,10);if(days.includes(k)){s++;d.setDate(d.getDate()-1);}else break;}
+  return s;
+}
+function recordAnswer(topic,correct){
+  const p=progress();p.answered++;if(correct)p.correct++;
+  p.byTopic[topic]=p.byTopic[topic]||{a:0,c:0};p.byTopic[topic].a++;if(correct)p.byTopic[topic].c++;
+  p.daily=p.daily||{};const k=todayKey();p.daily[k]=(p.daily[k]||0)+1;
+  saveProgress(p);snapshotToday();
+}
+function markQuizDay(){const p=progress();const k=todayKey();p.quizDays=p.quizDays||[];if(!p.quizDays.includes(k))p.quizDays.push(k);saveProgress(p);}
+
+/* ---------- analytics: history, activity, adherence ---------- */
+function snapshotToday(){
+  const p=progress();p.history=p.history||[];const k=todayKey();const r=readiness();
+  const e=p.history.find(x=>x.d===k);
+  if(e){e.r=r;e.a=p.answered;e.c=p.correct;}else{p.history.push({d:k,r,a:p.answered,c:p.correct});}
+  if(p.history.length>60)p.history=p.history.slice(-60);
+  saveProgress(p);
+}
+function historySeries(days=30){return (progress().history||[]).slice(-days);}
+function activitySeries(days=14){
+  const daily=progress().daily||{};const out=[];const base=new Date();base.setHours(0,0,0,0);
+  for(let i=days-1;i>=0;i--){const d=new Date(base);d.setDate(base.getDate()-i);const k=d.toISOString().slice(0,10);out.push({d:k,v:daily[k]||0});}
+  return out;
+}
+function sessionDoneMap(){return progress().sessionsDone||{};}
+function setSessionDone(k,val){const p=progress();p.sessionsDone=p.sessionsDone||{};if(val)p.sessionsDone[k]=true;else delete p.sessionsDone[k];saveProgress(p);}
+function planAdherence(){
+  const plan=Store.get('plan',null);if(!plan)return null;
+  const start=plan.created?new Date(plan.created+'T00:00:00'):new Date();start.setHours(0,0,0,0);
+  const today=new Date();today.setHours(0,0,0,0);
+  const done=sessionDoneMap();const daily=progress().daily||{};
+  let total=0,met=0;const strip=[];
+  for(let d=new Date(start);d<=today;d.setDate(d.getDate()+1)){
+    const dn=IXDAY[d.getDay()];const mins=(plan.avail&&plan.avail[dn])||0;const k=d.toISOString().slice(0,10);
+    if(mins>0){total++;const ok=!!done[k]||(daily[k]>0);if(ok)met++;strip.push({d:k,scheduled:true,ok});}
+    else strip.push({d:k,scheduled:false,ok:false});
+  }
+  return {total,met,pct:total?met/total:0,strip:strip.slice(-21)};
+}
+
+/* ---------- learning style ---------- */
+function learnStyle(){return Store.get('style',null);} // {V,A,R,K,primary}
+function styleModalities(){
+  const s=learnStyle();if(!s)return ['reading','scenario','flashcard'];
+  const map={V:['diagram','flashcard'],A:['podcast','flashcard'],R:['reading','practice'],K:['scenario','practice']};
+  const order=['V','A','R','K'].sort((a,b)=>s[b]-s[a]);
+  const mods=[];order.forEach(k=>map[k].forEach(m=>{if(!mods.includes(m))mods.push(m);}));
+  return mods;
+}
+
+/* ---------- custom mnemonics (user-created, saved by topic) ---------- */
+function customMnemonics(){return Store.get('mnemonics',[]);}
+function saveMnemonic(m){const list=customMnemonics();list.unshift(m);Store.set('mnemonics',list);}
+function deleteMnemonic(id){Store.set('mnemonics',customMnemonics().filter(m=>m.id!==id));}
+
+/* ---------- saved practice tests ---------- */
+function savedTests(){return Store.get('savedTests',[]);}
+function saveTest(t){const list=savedTests();list.unshift(t);Store.set('savedTests',list.slice(0,30));}
+function deleteTest(id){Store.set('savedTests',savedTests().filter(t=>t.id!==id));}
+
+/* ============================================================
+   AI LAYER — Study Assistant + podcast scripting
+   ------------------------------------------------------------
+   callClaude() works two ways:
+   1) Inside the Claude.ai artifact preview, fetch to the API
+      succeeds with no key (the environment injects credentials).
+   2) When self-hosted (GitHub Pages, etc.), it uses an Anthropic
+      API key you save in Settings (localStorage only). Without a
+      key in that context, it returns a friendly setup message.
+   The user's own reference/manifest text is passed as context so
+   answers are grounded in THEIR material, not the model's guesses.
+   ============================================================ */
+function aiKey(){return Store.get('aiKey','');}
+function aiModel(){return Store.get('aiModel','claude-sonnet-4-6');}
+function ragUrl(){return Store.get('ragUrl','').trim();}
+function appToken(){return Store.get('appToken','');}
+function ragOn(){return !!ragUrl();}
+/* Routes AI calls: if a backend (Supabase RAG) is configured it retrieves passages
+   from the ingested manuals and generates there (Anthropic key stays server-side);
+   otherwise it calls Anthropic directly (works in the preview / with a saved key). */
+/* ---------- Bundled manual (prototype): in-browser retrieval, no backend ----------
+   Loads content/lt-knowledge.json lazily on first AI use, then scores chunks by
+   term frequency × inverse document frequency so only the relevant passages are
+   sent to the model. Currently the Lieutenant manual is bundled. */
+let KB; // undefined = not tried, null = unavailable, object = loaded
+const STOP=new Set('the a an of to in for and or is are be as on at by with from this that it its into your you their they we our his her which what when who how why do does can may not no all any per each also more most such other than then them these those over under out off up down between within only if but into'.split(' '));
+const tokenize=s=>s.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+async function ensureLocalKB(){
+  if(KB!==undefined)return KB;
+  try{const r=await fetch('content/lt-knowledge.json',{cache:'force-cache'});KB=r.ok?await r.json():null;}
+  catch(e){KB=null;}
+  return KB;
+}
+function localRetrieve(query,k=6){
+  if(!KB||!KB.chunks)return [];
+  const terms=[...new Set(tokenize(query))].filter(t=>t.length>=3&&!STOP.has(t));
+  if(!terms.length)return [];
+  const N=KB.chunks.length,df={},scored=[];
+  const per=KB.chunks.map(c=>{
+    const low=c._low||(c._low=c.t.toLowerCase());const tf={};
+    for(const t of terms){let n=0,idx=0;while((idx=low.indexOf(t,idx))!==-1){n++;idx+=t.length;}if(n){tf[t]=n;df[t]=(df[t]||0)+1;}}
+    return {c,tf};
+  });
+  const idf={};for(const t of terms)idf[t]=Math.log(1+(N-(df[t]||0)+0.5)/((df[t]||0)+0.5));
+  for(const {c,tf} of per){let s=0;for(const t in tf){const f=tf[t];s+=idf[t]*(f*2.2)/(f+1.2*(0.25+0.75*(c.t.length/1600)));}if(s>0)scored.push({s,c});}
+  scored.sort((a,b)=>b.s-a.s);
+  return scored.slice(0,k).map(r=>({page:r.c.p,text:r.c.t}));
+}
+function localManualReady(){return !!(KB&&KB.chunks);}
+
+async function callClaudeSmart(messages,system,opts={}){
+  if(ragOn()){
+    const r=await fetch(ragUrl(),{method:'POST',
+      headers:{'Content-Type':'application/json','x-app-token':appToken()},
+      body:JSON.stringify({messages,system,retrievalQuery:opts.retrievalQuery||'',rank:RANK,topic:opts.topic||null,maxTokens:opts.maxTokens||1400})});
+    if(!r.ok){if(r.status===401||r.status===403)throw new Error('AUTH');
+      const t=await r.text().catch(()=>'');throw new Error('Backend '+r.status+(t?': '+t.slice(0,140):''));}
+    const d=await r.json();return {text:(d.answer||'').trim(),sources:d.sources||[]};
+  }
+  // No backend: use the bundled manual (Lieutenant) via in-browser retrieval.
+  let sys=system,sources=[];
+  if(opts.retrievalQuery&&RANK==='Lieutenant'){
+    await ensureLocalKB();
+    const hits=localRetrieve(opts.retrievalQuery,6);
+    if(hits.length){
+      sys=system+'\n\nRETRIEVED PASSAGES FROM THE LIEUTENANT MANUAL (answer from these; cite as [1], [2], …; if they do not cover the question, say so):\n\n'+
+        hits.map((h,i)=>`[[${i+1}]] (manual p.${h.page})\n${h.text}`).join('\n\n---\n\n');
+      sources=hits.map(h=>({title:`LT Manual — p.${h.page}`}));
+    }
+  }
+  const text=await callClaude(messages,sys,opts.maxTokens);return {text,sources};
+}
+async function callClaude(messages,system,maxTokens){
+  const key=aiKey();
+  const headers={'Content-Type':'application/json'};
+  if(key){headers['x-api-key']=key;headers['anthropic-version']='2023-06-01';headers['anthropic-dangerous-direct-browser-access']='true';}
+  const body={model:aiModel(),max_tokens:maxTokens||1200,messages};
+  if(system)body.system=system;
+  const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers,body:JSON.stringify(body)});
+  if(!r.ok){
+    const t=await r.text().catch(()=>'');
+    if(r.status===401||r.status===403)throw new Error('AUTH');
+    throw new Error('API '+r.status+(t?': '+t.slice(0,160):''));
+  }
+  const data=await r.json();
+  return (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n').trim();
+}
+/* Build a compact knowledge context from the user's loaded material + sample notes */
+function knowledgeContext(){
+  const refs=(MANIFEST&&Array.isArray(MANIFEST.references)?MANIFEST.references:[]).filter(r=>refInRank(r,RANK));
+  const loaded=refs.map(r=>`- ${r.title} [${topicLabel(r.topic)}]${r.note?': '+r.note:''}`).join('\n');
+  const notes=Object.keys(TOPIC_NOTES).map(t=>`${topicLabel(t)}:\n`+TOPIC_NOTES[t].map(n=>'  • '+n).join('\n')).join('\n\n');
+  return `TARGET RANK: ${RANK}\n\n`+
+    (loaded?`REGISTERED PUBLICATIONS IN THIS RANK'S BIBLIOGRAPHY (from the user's content library):\n${loaded}\n\n`:'')+
+    `SAMPLE STUDY NOTES (illustrative general fire-service knowledge, not official FDNY text):\n${notes}`;
+}
+function aiAvailableHere(){/* preview env may allow keyless; we optimistically allow attempts */return true;}
+
+/* ---------- Settings modal ---------- */
+function openSettings(){
+  const root=$('#modalRoot');
+  root.innerHTML=`<div class="modal-bg" id="mbg"><div class="modal">
+    <button class="close" id="mclose">×</button>
+    <h3>Settings</h3>
+    <div class="section__title" style="margin-top:8px"><h3 style="font-size:13px;color:var(--violet)">Manuals backend (recommended)</h3><span class="rule"></span></div>
+    <p style="color:var(--text-dim);margin:2px 0 12px;font-size:12.5px">Connect the Supabase backend so the assistant and podcast read your <b>ingested reference manuals</b>. When set, AI calls go here (your Anthropic key stays on the server) and answers cite the source passages.</p>
+    <label class="fld"><span class="k">Backend /ask URL</span>
+      <input type="text" id="setRag" placeholder="https://YOUR-PROJECT.functions.supabase.co/ask" value="${esc(ragUrl())}"></label>
+    <label class="fld"><span class="k">App token</span>
+      <input type="password" id="setTok" placeholder="the APP_TOKEN you set on the backend" value="${esc(appToken())}"></label>
+    <div class="notice notice--ai" style="margin:0 0 16px"><span>✦</span><div>With a backend connected you do <b>not</b> need the Anthropic key below — it lives in the backend instead. Leave the backend blank to run keyless in this preview, or with a direct key for a quick self-hosted demo.</div></div>
+    <div class="section__title" style="margin-top:4px"><h3 style="font-size:13px">Direct Anthropic key (no backend)</h3><span class="rule"></span></div>
+    <p style="color:var(--text-dim);margin:2px 0 12px;font-size:12.5px">Only used when no backend is set. Grounds answers in titles/notes, not full manual text.</p>
+    <label class="fld"><span class="k">Anthropic API key (self-hosted only)</span>
+      <input type="password" id="setKey" placeholder="sk-ant-..." value="${esc(aiKey())}"></label>
+    <label class="fld"><span class="k">Model (direct mode)</span>
+      <select id="setModel">
+        <option value="claude-sonnet-4-6" ${aiModel()==='claude-sonnet-4-6'?'selected':''}>Claude Sonnet 4.6 (balanced)</option>
+        <option value="claude-opus-4-8" ${aiModel()==='claude-opus-4-8'?'selected':''}>Claude Opus 4.8 (most capable)</option>
+        <option value="claude-haiku-4-5-20251001" ${aiModel()==='claude-haiku-4-5-20251001'?'selected':''}>Claude Haiku 4.5 (fastest)</option>
+      </select></label>
+    <div class="notice" style="margin:0 0 16px"><span>⚠︎</span><div>Never commit a file containing your API key or app token to a public repo. Enter them here at runtime instead.</div></div>
+    <div class="section__title" style="margin-top:4px"><h3 style="font-size:13px">Reset</h3><span class="rule"></span></div>
+    <p style="color:var(--text-dim);font-size:12px;margin:6px 0 10px">Clear all local progress, plans, survey results, saved tests, and mnemonics on this device.</p>
+    <div class="btnrow"><button class="btn btn--red" id="setSave">Save settings</button><button class="btn btn--ghost" id="setReset">Reset all data</button><span id="setMsg" style="color:var(--green);font-size:12px"></span></div>
+  </div></div>`;
+  const close=()=>{root.innerHTML='';};
+  $('#mclose',root).onclick=close;
+  $('#mbg',root).onclick=e=>{if(e.target.id==='mbg')close();};
+  $('#setSave',root).onclick=()=>{Store.set('aiKey',$('#setKey',root).value.trim());Store.set('aiModel',$('#setModel',root).value);Store.set('ragUrl',$('#setRag',root).value.trim());Store.set('appToken',$('#setTok',root).value.trim());$('#setMsg',root).textContent='Saved.';};
+  $('#setReset',root).onclick=()=>{if(confirm('Erase all study data on this device? This cannot be undone.')){['progress','plan','style','surveyAnswers','fcTopic','mnemonics','savedTests'].forEach(k=>Store.set(k,undefined));location.reload();}};
+}
+
+/* ============================================================
+   NAV + ROUTER
+   ============================================================ */
+const VIEWS=[
+  {id:'dashboard',label:'Dashboard',icon:'dashboard',group:'Overview',fn:viewDashboard},
+  {id:'survey',label:'Learning Style',icon:'survey',group:'Overview',fn:viewSurvey},
+  {id:'plan',label:'Study Plan',icon:'plan',group:'Overview',fn:viewPlan},
+  {id:'library',label:'Reference Library',icon:'library',group:'Study',fn:viewLibrary},
+  {id:'assistant',label:'Study Assistant',icon:'assistant',group:'Study',ai:true,fn:viewAssistant},
+  {id:'flashcards',label:'Flashcards',icon:'cards',group:'Study',fn:viewFlashcards},
+  {id:'practice',label:'Practice Test',icon:'practice',group:'Study',fn:viewPractice},
+  {id:'quiz',label:'Daily Quiz',icon:'quiz',group:'Study',fn:viewQuiz},
+  {id:'scenarios',label:'Scenarios',icon:'scenario',group:'Study',fn:viewScenarios},
+  {id:'podcast',label:'Podcast Studio',icon:'podcast',group:'Media',ai:true,fn:viewPodcast},
+  {id:'diagrams',label:'Diagrams & Video',icon:'diagrams',group:'Media',fn:viewDiagrams},
+  {id:'acronyms',label:'Acronyms & Mnemonics',icon:'acronyms',group:'Media',fn:viewAcronyms},
+];
+function renderNav(){
+  const cur=(location.hash||'#dashboard').slice(1).split('/')[0];
+  const groups=[...new Set(VIEWS.map(v=>v.group))];
+  $('#nav').innerHTML=groups.map(g=>`<div class="nav__group"><div class="nav__label">${g}</div>${
+    VIEWS.filter(v=>v.group===g).map(v=>`<a href="#${v.id}" class="${v.id===cur?'on':''}">${icon(v.icon)}<span>${v.label}</span>${
+      v.id==='quiz'&&(progress().quizDays||[]).includes(todayKey())?'<span class="badge">✓</span>':v.ai?'<span class="dot-ai">AI</span>':''}</a>`).join('')}</div>`).join('');
+}
+function renderRank(){
+  $('#rankSelect').innerHTML=RANKS.map(r=>`<button class="${r===RANK?'on':''}" data-r="${r}" title="${r}">${rankShort(r)}</button>`).join('');
+  $$('#rankSelect button').forEach(b=>b.onclick=()=>{RANK=b.dataset.r;Store.set('rank',RANK);renderRank();route();});
+}
+function route(){
+  renderNav();$('#streakVal').textContent=streak();
+  const id=(location.hash||'#dashboard').slice(1).split('/')[0];
+  const v=VIEWS.find(x=>x.id===id)||VIEWS[0];
+  $('#main').innerHTML='';v.fn($('#main'));$('#main').scrollTop=0;
+}
+window.addEventListener('hashchange',route);
+
+/* ============================================================
+   VIEWS
+   ============================================================ */
+const sampleNotice=`<div class="notice"><span>ⓘ</span><div>This build ships with <b>sample study content</b> for demonstration — it is not official FDNY or DCAS material. Add your authorized publications in the <a href="#library">Reference Library</a>; questions, flashcards, and podcasts will then draw from them.</div></div>`;
+
+function tile(id,title,desc){const v=VIEWS.find(x=>x.id===id);return `<a class="tile" href="#${id}"><div class="ico">${icon(v.icon)}</div><h4>${title}</h4><p>${desc}</p></a>`;}
+function sessionRow(s){const col={diagram:'var(--violet)',podcast:'var(--cyan)',flashcard:'var(--amber)',reading:'var(--green)',practice:'var(--red)',scenario:'#ff9ea1'}[s.modality]||'var(--line-strong)';
+  return `<div class="session"><span class="dot" style="background:${col}"></span><span class="when">${s.timeLabel} · ${s.minutes} min</span><span class="what">${topicLabel(s.topic)}</span><span class="mod pill pill--dim">${s.modality}</span></div>`;}
+
+function viewDashboard(el){
+  snapshotToday();
+  const p=progress(),rd=readiness(),st=learnStyle(),plan=Store.get('plan',null);
+  const hist=historySeries(30);
+  const trendPts=hist.length>=2?Math.round((hist[hist.length-1].r-hist[0].r)*100):null;
+  const acc=p.answered?p.correct/p.answered:0;
+  const adh=planAdherence();
+  const act=activitySeries(14);
+  const todayK=todayKey();
+  const todaySessions=plan?planSessionsForDate(plan,new Date()):[];
+  const todayDone=!!(p.sessionsDone&&p.sessionsDone[todayK]);
+  const bt=p.byTopic||{};
+  const weak=TOPICS.map(t=>{const s=bt[t.id]||{a:0,c:0};return {t,a:s.a,c:s.c,acc:s.a?s.c/s.a:0};}).filter(x=>x.a>0).sort((a,b)=>a.acc-b.acc).slice(0,3);
+  const covered=Object.keys(bt).length;
+
+  el.innerHTML=`<div class="view">
+    <div class="page-head"><h2>Command Dashboard</h2><p>Exam-readiness analytics for <b style="color:var(--text)">${RANK}</b> — trends, topic mastery, activity, and how closely you're following your plan.</p></div>
+    ${sampleNotice}
+
+    <div class="grid g4" style="margin-top:6px">
+      <div class="stat" style="--accent:var(--red)"><div class="lbl">Readiness</div><div class="val">${Math.round(rd*100)}<span class="u">%</span></div>
+        <div class="foot">${trendPts===null?'baseline set today':`<span style="color:${trendPts>=0?'var(--green)':'#ff6b70'}">${trendPts>=0?'▲':'▼'} ${Math.abs(trendPts)} pts</span> over ${hist.length} days`}</div></div>
+      <div class="stat" style="--accent:var(--amber)"><div class="lbl">Accuracy</div><div class="val">${Math.round(acc*100)}<span class="u">%</span></div><div class="foot">${p.correct}/${p.answered} correct</div></div>
+      <div class="stat" style="--accent:var(--green)"><div class="lbl">Study streak</div><div class="val">${streak()}<span class="u">d</span></div><div class="foot">${covered}/${TOPICS.length} topics touched</div></div>
+      <div class="stat" style="--accent:var(--cyan)"><div class="lbl">Plan adherence</div><div class="val">${adh?Math.round(adh.pct*100):'—'}${adh?'<span class="u">%</span>':''}</div><div class="foot">${adh?`${adh.met}/${adh.total} planned days met`:'<a href="#plan">build a plan</a>'}</div></div>
+    </div>
+
+    <div class="grid g2" style="margin-top:14px;grid-template-columns:300px 1fr">
+      <div class="panel"><div class="ring-wrap">${ringSVG(rd,'READY')}
+        <div class="ring-meta" style="flex:1">
+          <div class="row"><span class="k">Learning style</span><span class="v">${st?st.primary:'Not set'}</span></div>
+          <div class="row"><span class="k">Target rank</span><span class="v">${RANK}</span></div>
+          <div class="row"><span class="k">Coverage</span><span class="v">${covered}/${TOPICS.length}</span></div>
+          <div class="row"><span class="k">Plan</span><span class="v">${plan?'Active':'None'}</span></div>
+          ${st?'':'<div style="margin-top:12px"><a class="btn btn--red" href="#survey">Take the survey</a></div>'}
+        </div></div></div>
+      <div class="panel"><div class="section__title" style="margin-top:0"><h3>Readiness over time</h3><span class="rule"></span><span class="tag">last ${hist.length} day${hist.length===1?'':'s'}</span></div>
+        ${lineChartSVG(hist)}
+        ${hist.length<2?'<p style="color:var(--text-faint);font-size:12px;margin:8px 0 0">Your readiness blends accuracy, topic coverage, and volume. Study across a few days to see the curve build.</p>':''}
+      </div>
+    </div>
+
+    <div class="section"><div class="section__title"><h3>Topic mastery</h3><span class="rule"></span><span class="tag">accuracy by topic · tap to drill</span></div>
+      <div class="panel">${masteryHeatmap()}
+        <div class="heat-legend"><span><i style="background:var(--green)"></i>≥80%</span><span><i style="background:var(--amber)"></i>60–79%</span><span><i style="background:var(--red)"></i>&lt;60%</span><span><i style="background:#33404F"></i>not started</span></div>
+      </div></div>
+
+    <div class="grid g2" style="margin-top:20px">
+      <div class="panel"><div class="section__title" style="margin-top:0"><h3>Study activity</h3><span class="rule"></span><span class="tag">questions / day · 14 days</span></div>${activityBarsSVG(act)}</div>
+      <div class="panel"><div class="section__title" style="margin-top:0"><h3>Plan adherence</h3><span class="rule"></span><span class="tag">${adh?'last '+adh.strip.length+' days':'no plan'}</span></div>
+        ${adh?`<div style="display:flex;align-items:baseline;gap:10px"><span class="mono" style="font-size:34px;font-weight:700;color:${adh.pct>=.75?'var(--green)':adh.pct>=.5?'var(--amber)':'var(--red)'}">${Math.round(adh.pct*100)}%</span><span style="color:var(--text-dim);font-size:12px">${adh.met} of ${adh.total} planned study days met</span></div>
+          ${adherenceStrip(adh.strip)}
+          <div class="heat-legend"><span><i style="background:var(--green)"></i>studied</span><span><i style="background:var(--red)"></i>missed</span><span><i style="background:#232C3A"></i>rest day</span></div>`
+          :`<div class="empty">No plan yet. <a href="#plan">Build a study plan</a> and this tracks how well you keep to it.</div>`}
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-top:20px">
+      <div class="panel"><div class="section__title" style="margin-top:0"><h3>Focus areas</h3><span class="rule"></span><span class="tag">your weakest topics</span></div>
+        ${weak.length?weak.map(w=>`<div class="focus"><span class="focus__acc" style="color:${w.acc>=.6?'var(--amber)':'var(--red)'}">${Math.round(w.acc*100)}%</span>
+          <div class="focus__meta"><div class="focus__t">${topicLabel(w.t.id)}</div><div class="focus__n">${w.c}/${w.a} correct</div></div>
+          <button class="btn btn--ghost" data-drill="${w.t.id}">Drill ›</button></div>`).join('')
+          :`<div class="empty">Answer some questions and your weakest topics show up here with a one-tap drill.</div>`}
+      </div>
+      <div class="panel"><div class="section__title" style="margin-top:0"><h3>Today's plan</h3><span class="rule"></span><span class="tag">${new Date().toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'})}</span></div>
+        ${todaySessions.length?todaySessions.map(sessionRow).join('')+
+          `<div class="btnrow" style="margin-top:12px"><button class="btn ${todayDone?'btn--red':''}" id="todayDone">${todayDone?'✓ Marked done':'Mark today complete'}</button></div>`
+          :`<div class="empty">No session scheduled today. <a href="#plan">Adjust your plan</a> or study anything above.</div>`}
+      </div>
+    </div>
+
+    <div class="section"><div class="section__title"><h3>Jump back in</h3><span class="rule"></span></div>
+      <div class="tiles">
+        ${tile('assistant','Study assistant','Ask questions about your material')}
+        ${tile('quiz','Daily quiz',(progress().quizDays||[]).includes(todayKey())?'Done today — come back tomorrow':'Quick questions to hold your streak')}
+        ${tile('flashcards','Flashcards','Spaced review by topic')}
+        ${tile('practice','Practice test','Save, reload, and regenerate sets')}
+        ${tile('scenarios','Scenarios','Officer decision-making prompts')}
+        ${tile('podcast','Podcast studio','Turn chapters into audio episodes')}
+      </div>
+    </div>
+  </div>`;
+
+  $$('.heat__tile',el).forEach(b=>b.onclick=()=>{Store.set('fcTopic',b.dataset.t);location.hash='#flashcards';});
+  $$('[data-drill]',el).forEach(b=>b.onclick=()=>{Store.set('fcTopic',b.dataset.drill);location.hash='#flashcards';});
+  const td=$('#todayDone',el);if(td)td.onclick=()=>{setSessionDone(todayK,!(progress().sessionsDone&&progress().sessionsDone[todayK]));viewDashboard(el);};
+}
+
+/* ---------- dashboard chart builders ---------- */
+function lineChartSVG(series){
+  if(!series.length)return '<div class="empty">No data yet — answer a few questions and your readiness trend appears here.</div>';
+  const VBW=720,VBH=210,pL=34,pR=14,pT=14,pB=26,n=series.length;
+  const x=i=>pL+(n===1?(VBW-pL-pR)/2:i/(n-1)*(VBW-pL-pR));
+  const y=v=>pT+(1-v)*(VBH-pT-pB);
+  const gy=[0,.25,.5,.75,1].map(v=>`<line x1="${pL}" y1="${y(v).toFixed(1)}" x2="${VBW-pR}" y2="${y(v).toFixed(1)}" stroke="#1c2431"/><text x="${pL-6}" y="${(y(v)+3).toFixed(1)}" text-anchor="end" fill="#93A0B4" font-size="10" font-family="JetBrains Mono">${v*100}</text>`).join('');
+  const line=series.map((p,i)=>`${i?'L':'M'}${x(i).toFixed(1)} ${y(p.r).toFixed(1)}`).join(' ');
+  const area=`M${x(0).toFixed(1)} ${y(0).toFixed(1)} `+series.map((p,i)=>`L${x(i).toFixed(1)} ${y(p.r).toFixed(1)}`).join(' ')+` L${x(n-1).toFixed(1)} ${y(0).toFixed(1)} Z`;
+  const dots=series.map((p,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(p.r).toFixed(1)}" r="${i===n-1?4:2.2}" fill="${i===n-1?'var(--red)':'var(--amber)'}"/>`).join('');
+  return `<svg viewBox="0 0 ${VBW} ${VBH}" style="width:100%;height:auto">
+    <defs><linearGradient id="rgrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F5A623" stop-opacity="0.26"/><stop offset="1" stop-color="#F5A623" stop-opacity="0"/></linearGradient></defs>
+    ${gy}<path d="${area}" fill="url(#rgrad)"/><path d="${line}" fill="none" stroke="var(--amber)" stroke-width="2"/>${dots}
+    <text x="${pL}" y="${VBH-7}" fill="#5D6B7E" font-size="10" font-family="JetBrains Mono">${series[0].d.slice(5)}</text>
+    <text x="${VBW-pR}" y="${VBH-7}" text-anchor="end" fill="#5D6B7E" font-size="10" font-family="JetBrains Mono">${series[n-1].d.slice(5)}</text></svg>`;
+}
+function activityBarsSVG(series){
+  const VBW=720,VBH=170,pL=26,pR=10,pT=12,pB=24,n=series.length;
+  const max=Math.max(1,...series.map(s=>s.v)),gap=(VBW-pL-pR)/n,bw=gap*0.6;
+  const y=v=>pT+(1-v/max)*(VBH-pT-pB);
+  const bars=series.map((s,i)=>{const bx=pL+i*gap+(gap-bw)/2,by=y(s.v),h=Math.max(0,(VBH-pB)-by);
+    return `<rect x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="2" fill="${s.v?'var(--cyan)':'#1c2431'}"/>`+
+      (i%2===1?`<text x="${(bx+bw/2).toFixed(1)}" y="${VBH-7}" text-anchor="middle" fill="#5D6B7E" font-size="9" font-family="JetBrains Mono">${s.d.slice(5)}</text>`:'');}).join('');
+  const gy=`<text x="${pL-6}" y="15" text-anchor="end" fill="#93A0B4" font-size="9" font-family="JetBrains Mono">${max}</text><text x="${pL-6}" y="${VBH-pB+3}" text-anchor="end" fill="#93A0B4" font-size="9" font-family="JetBrains Mono">0</text>`;
+  return `<svg viewBox="0 0 ${VBW} ${VBH}" style="width:100%;height:auto">${gy}${bars}</svg>`;
+}
+function masteryHeatmap(){
+  const bt=progress().byTopic||{};
+  return `<div class="heat">`+TOPICS.map(t=>{const s=bt[t.id];const a=s?s.a:0,acc=a?s.c/a:0;
+    const col=a===0?'#33404F':acc>=.8?'var(--green)':acc>=.6?'var(--amber)':'var(--red)';
+    return `<button class="heat__tile" data-t="${t.id}" title="${esc(t.label)} — ${a} attempts${a?', '+Math.round(acc*100)+'% correct':''}" style="--c:${col}">
+      <span class="ht-acc" style="color:${col}">${a===0?'—':Math.round(acc*100)+'%'}</span>
+      <span class="ht-lbl">${t.short}</span><span class="ht-n">${a} q</span></button>`;}).join('')+`</div>`;
+}
+function adherenceStrip(strip){
+  return `<div class="adh">`+strip.map(d=>{const cls=!d.scheduled?'off':d.ok?'ok':'miss';
+    return `<span class="adh__d ${cls}" title="${d.d}${d.scheduled?(d.ok?' · studied':' · missed'):' · rest day'}"></span>`;}).join('')+`</div>`;
+}
+
+/* ---------- Survey ---------- */
+function viewSurvey(el){
+  const saved=Store.get('surveyAnswers',{});
+  el.innerHTML=`<div class="view"><div class="page-head"><h2>Learning-Style Survey</h2>
+    <p>Answer honestly — the app uses your dominant style to weight what it recommends (diagrams, audio, reading, or hands-on scenarios) and to shape your study plan. Sample VARK-style instrument.</p></div>
+    <div id="surveyList">${SURVEY.map((s,i)=>`<div class="survey-q"><div class="q">${i+1}. ${s.q}</div>
+      ${s.opts.map((o,j)=>`<label class="survey-opt ${saved[i]===j?'sel':''}" data-q="${i}" data-j="${j}" data-t="${o[1]}">${o[0]}</label>`).join('')}</div>`).join('')}</div>
+    <div class="btnrow"><button class="btn btn--red" id="surveyDone">Save & analyze</button><span id="surveyMsg" style="color:var(--text-dim)"></span></div>
+    <div id="styleResult" style="margin-top:18px"></div></div>`;
+  $$('.survey-opt',el).forEach(o=>o.onclick=()=>{
+    $$(`.survey-opt[data-q="${o.dataset.q}"]`,el).forEach(x=>x.classList.remove('sel'));o.classList.add('sel');
+    const a=Store.get('surveyAnswers',{});a[o.dataset.q]=+o.dataset.j;Store.set('surveyAnswers',a);
+  });
+  $('#surveyDone',el).onclick=()=>{
+    const a=Store.get('surveyAnswers',{});if(Object.keys(a).length<SURVEY.length){$('#surveyMsg',el).textContent='Answer all questions first.';return;}
+    const tally={V:0,A:0,R:0,K:0};SURVEY.forEach((s,i)=>{tally[s.opts[a[i]][1]]++;});
+    const names={V:'Visual',A:'Auditory',R:'Reading/Writing',K:'Kinesthetic'};
+    const primary=names[Object.keys(tally).sort((x,y)=>tally[y]-tally[x])[0]];
+    Store.set('style',{...tally,primary});renderStyleResult($('#styleResult',el),tally,primary,names);
+    $('#surveyMsg',el).textContent='Saved. Recommendations updated.';
+  };
+  if(learnStyle()){const t=learnStyle();renderStyleResult($('#styleResult',el),t,t.primary,{V:'Visual',A:'Auditory',R:'Reading/Writing',K:'Kinesthetic'});}
+}
+function renderStyleResult(box,t,primary){
+  const max=Math.max(t.V,t.A,t.R,t.K)||1;const rows=[['V','Visual'],['A','Auditory'],['R','Reading/Writing'],['K','Kinesthetic']];
+  const rec={Visual:'diagrams, animated explainers, and color-coded flashcards',Auditory:'the podcast studio and read-aloud review',
+    'Reading/Writing':'the reference library, written practice tests, and note-taking','Kinesthetic':'scenario drills and frequent practice tests'}[primary];
+  box.innerHTML=`<div class="panel"><div class="section__title" style="margin-top:0"><h3>Your profile: ${primary}</h3><span class="rule"></span></div>
+    ${rows.map(([k,l])=>`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>${l}</span><span class="mono">${t[k]}</span></div>
+      <div class="progressbar" style="margin:0"><i style="width:${t[k]/max*100}%;background:${l===primary?'var(--red)':'var(--line-strong)'}"></i></div></div>`).join('')}
+    <p style="color:var(--text-dim);margin:12px 0 0">We'll prioritize <b style="color:var(--text)">${rec}</b> in your dashboard and study plan. You can retake this anytime.</p></div>`;
+}
+
+/* ---------- Study Plan ---------- */
+const DAYIX={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
+const IXDAY=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function viewPlan(el){
+  const plan=Store.get('plan',{rank:RANK,examDate:'',avail:{Mon:30,Tue:30,Wed:30,Thu:30,Fri:30,Sat:60,Sun:0},priorities:[]});
+  const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  el.innerHTML=`<div class="view"><div class="page-head"><h2>Study Plan Builder</h2>
+    <p>Tell the app your exam date and when you can study. It builds a schedule across the topics — matched to your learning style — that you can follow from the dashboard.</p></div>
+    ${sampleNotice}
+    <div class="grid g2" style="grid-template-columns:1fr 1fr">
+      <div class="panel">
+        <label class="fld"><span class="k">Target rank</span><select id="plRank">${RANKS.map(r=>`<option ${r===(plan.rank||RANK)?'selected':''}>${r}</option>`).join('')}</select></label>
+        <label class="fld"><span class="k">Exam date</span><input type="date" id="plDate" value="${plan.examDate||''}"></label>
+        <span class="k" style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-faint);margin-bottom:2px">Minutes available per day</span>
+        <div class="avail">${days.map(d=>`<div class="day"><div class="dn">${d}</div><input type="number" min="0" max="300" step="15" data-day="${d}" value="${plan.avail[d]??0}"></div>`).join('')}</div>
+      </div>
+      <div class="panel">
+        <span class="k" style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-faint);margin-bottom:8px">Priority topics (optional — tap to emphasize)</span>
+        <div class="chips" id="plTopics">${TOPICS.map(t=>`<span class="chip ${(plan.priorities||[]).includes(t.id)?'on':''}" data-t="${t.id}">${t.short}</span>`).join('')}</div>
+        <div class="btnrow" style="margin-top:18px"><button class="btn btn--red" id="plBuild">Generate plan</button><button class="btn btn--ghost" id="plClear">Clear</button></div>
+        <p style="color:var(--text-faint);font-size:12px;margin-top:10px">Modality is chosen from your learning style: ${styleModalities().slice(0,3).join(', ')}…</p>
+      </div>
+    </div>
+    <div class="section" id="planOut"></div></div>`;
+  $('#plTopics',el).onclick=e=>{const c=e.target.closest('.chip');if(c)c.classList.toggle('on');};
+  $('#plClear',el).onclick=()=>{Store.set('plan',null);viewPlan(el);};
+  $('#plBuild',el).onclick=()=>{
+    const avail={};$$('.avail input',el).forEach(i=>avail[i.dataset.day]=+i.value||0);
+    const priorities=$$('.chip.on',el).map(c=>c.dataset.t);
+    const np={rank:$('#plRank',el).value,examDate:$('#plDate',el).value,avail,priorities,created:todayKey()};
+    Store.set('plan',np);RANK=np.rank;Store.set('rank',RANK);renderRank();
+    renderPlanOut($('#planOut',el),np);
+  };
+  if(Store.get('plan',null))renderPlanOut($('#planOut',el),Store.get('plan'));
+}
+function buildSchedule(plan){
+  const start=new Date();start.setHours(0,0,0,0);
+  const end=plan.examDate?new Date(plan.examDate+'T00:00:00'):new Date(Date.now()+42*864e5);
+  const mods=styleModalities();
+  const order=(plan.priorities&&plan.priorities.length?plan.priorities:[]).concat(TOPICS.map(t=>t.id).filter(id=>!(plan.priorities||[]).includes(id)));
+  const sessions=[];let ti=0,mi=0,d=new Date(start),guard=0;
+  while(d<=end&&guard<400){guard++;
+    const dn=IXDAY[d.getDay()];const mins=plan.avail[dn]||0;
+    if(mins>0){sessions.push({date:new Date(d),dayName:dn,minutes:mins,topic:order[ti%order.length],modality:mods[mi%mods.length],
+      timeLabel:d.toLocaleDateString('en-US',{month:'short',day:'numeric'})});ti++;mi++;}
+    d.setDate(d.getDate()+1);
+  }
+  return sessions;
+}
+function planSessionsForDate(plan,date){
+  if(!plan)return [];const all=buildSchedule(plan);const k=date.toISOString().slice(0,10);
+  return all.filter(s=>s.date.toISOString().slice(0,10)===k);
+}
+function renderPlanOut(box,plan){
+  const s=buildSchedule(plan);
+  if(!s.length){box.innerHTML='<div class="empty">No available minutes set — add time to at least one day.</div>';return;}
+  const totalMin=s.reduce((a,x)=>a+x.minutes,0);
+  const byWeek={};s.forEach(x=>{const wk=Math.floor((x.date-s[0].date)/(7*864e5));(byWeek[wk]=byWeek[wk]||[]).push(x);});
+  box.innerHTML=`<div class="section__title"><h3>Your schedule</h3><span class="rule"></span><span class="tag">${s.length} sessions · ${Math.round(totalMin/60)} h${plan.examDate?' · exam '+plan.examDate:''}</span></div>
+    ${Object.keys(byWeek).map(wk=>`<div class="panel" style="margin-bottom:12px"><div class="eyebrow" style="margin-bottom:8px">Week ${+wk+1}</div>
+      ${byWeek[wk].slice(0,7).map(x=>sessionRow({...x,timeLabel:x.timeLabel})).join('')}</div>`).join('')}`;
+}
+
+/* ---------- Reference Library ---------- */
+function refInRank(r,rank){
+  // No ranks field = applies to every rank. Otherwise must include the selected rank.
+  if(!r.ranks||!Array.isArray(r.ranks)||!r.ranks.length)return true;
+  return r.ranks.includes(rank);
+}
+function viewLibrary(el){
+  let scope=Store.get('libScope','rank'); // 'rank' or 'all'
+  el.innerHTML=`<div class="view"><div class="page-head"><h2>Reference Library</h2>
+    <p>The bibliography the exams draw from. Public sources link out directly; internal FDNY manuals are ready to receive your authorized copies. Tag each publication with the ranks it applies to and this becomes a per-rank reading list.</p></div>
+    <div class="notice"><span>ⓘ</span><div>FDNY operational manuals (Communications, Proby, Regulations, HAZMAT, CFR-D, Ladder/Engine, Circulars) are distributed on the <b>FDNY intranet</b> and aren't public. Drop your authorized PDFs into <code>/content</code> and list them in <code>content/manifest.json</code> — see the README. The <b>NYC Fire Code</b>, <b>FDNY rules</b>, and <b>DCAS exam notices</b> are public and linked below.</div></div>
+    <div class="btnrow" style="margin:4px 0 14px">
+      <input id="refSearch" placeholder="Search publications…" style="max-width:300px">
+      <div class="rank-select" id="libScope" style="margin-left:auto">
+        <button data-s="rank" class="${scope==='rank'?'on':''}">${RANK} list</button>
+        <button data-s="all" class="${scope==='all'?'on':''}">All ranks</button>
+      </div>
+    </div>
+    <div class="panel" style="padding:0" id="refList"></div></div>`;
+  let ALL=REFERENCES.slice();
+  const rankPill=r=>{
+    if(!r.ranks||!r.ranks.length)return '<span class="pill pill--dim" title="Applies to all ranks">All ranks</span>';
+    return r.ranks.map(rk=>`<span class="pill pill--violet">${rankShort(rk)}</span>`).join(' ');
+  };
+  const draw=()=>{
+    const q=($('#refSearch',el).value||'').toLowerCase();
+    const items=ALL.filter(r=>(scope==='all'||refInRank(r,RANK))
+      &&(!q||r.title.toLowerCase().includes(q)||topicLabel(r.topic).toLowerCase().includes(q)));
+    $('#refList',el).innerHTML=items.map(r=>`<div class="ref">
+      <div class="ico">${icon('code')}</div>
+      <div class="meta"><div class="t">${esc(r.title)}</div><div class="d">${topicLabel(r.topic)} · ${esc(r.note||'')}</div></div>
+      ${rankPill(r)}
+      ${r.status==='public'?`<a class="btn btn--ghost" href="${r.url}" target="_blank" rel="noopener">Open ↗</a><span class="pill pill--green">Public</span>`
+        :(r.file||r.url)?`<a class="btn btn--ghost" href="${esc(r.file||r.url)}" target="_blank" rel="noopener">Open ↗</a><span class="pill pill--cyan">Loaded</span>`
+        :`<span class="pill pill--amber">Add PDF</span>`}
+    </div>`).join('')||`<div class="empty">No publications tagged for ${scope==='rank'?RANK:'this search'} yet.</div>`;
+  };
+  draw();$('#refSearch',el).oninput=draw;
+  $$('#libScope button',el).forEach(b=>b.onclick=()=>{scope=b.dataset.s;Store.set('libScope',scope);$$('#libScope button',el).forEach(x=>x.classList.toggle('on',x===b));draw();});
+  loadManifest().then(m=>{ if(m&&Array.isArray(m.references)&&m.references.length){
+    ALL=REFERENCES.concat(m.references.map(r=>({status:'uploaded',...r})));draw();} });
+}
+
+/* ---------- Flashcards ---------- */
+function viewFlashcards(el){
+  let topic=Store.get('fcTopic','all');
+  const deck=()=>FLASHCARDS.filter(f=>topic==='all'||f.topic===topic);
+  let i=0;
+  el.innerHTML=`<div class="view"><div class="page-head"><h2>Flashcards</h2><p>Flip to check yourself; mark cards to keep or review. Sample deck — expands as you add publications.</p></div>
+    <div class="btnrow" style="margin-bottom:14px"><select id="fcTopic" style="max-width:280px"><option value="all">All topics</option>${TOPICS.map(t=>`<option value="${t.id}" ${t.id===topic?'selected':''}>${t.label}</option>`).join('')}</select><span id="fcCount" class="mono" style="color:var(--text-dim)"></span></div>
+    <div class="qwrap" style="max-width:560px"><div class="fcard" id="fcard"><div class="fcard__inner">
+      <div class="fcard__face fcard__front"><span class="tp pill pill--dim" id="fcTag"></span><span id="fcFront"></span><span class="hint">click to flip</span></div>
+      <div class="fcard__face fcard__back"><span id="fcBack"></span><span class="hint">click to flip back</span></div>
+    </div></div>
+    <div class="btnrow" style="margin-top:16px;justify-content:space-between"><button class="btn" id="fcPrev">‹ Prev</button>
+      <div class="btnrow"><button class="btn" id="fcReview">Needs review</button><button class="btn btn--red" id="fcKnow">I know this</button></div>
+      <button class="btn" id="fcNext">Next ›</button></div></div></div>`;
+  const card=$('#fcard',el);
+  function show(){const d=deck();if(!d.length){$('#fcFront',el).textContent='No cards for this topic yet.';$('#fcBack',el).textContent='';$('#fcCount',el).textContent='0 / 0';return;}
+    i=(i+d.length)%d.length;const c=d[i];card.classList.remove('flip');
+    $('#fcTag',el).textContent=topicShort(c.topic);
+    $('#fcFront',el).textContent=c.front;$('#fcBack',el).textContent=c.back;$('#fcCount',el).textContent=`${i+1} / ${d.length}`;}
+  card.onclick=()=>card.classList.toggle('flip');
+  $('#fcTopic',el).onchange=e=>{topic=e.target.value;Store.set('fcTopic',topic);i=0;show();};
+  $('#fcPrev',el).onclick=()=>{i--;show();};$('#fcNext',el).onclick=()=>{i++;show();};
+  $('#fcKnow',el).onclick=()=>{const k=progress().known||{};k[deck()[i].front]=true;const p=progress();p.known=k;saveProgress(p);i++;show();};
+  $('#fcReview',el).onclick=()=>{i++;show();};
+  show();
+}
+
+/* ---------- Practice test / Daily quiz (shared engine) ---------- */
+function pickQuestions(n,rank,topicFilter){
+  let pool=QUESTIONS.filter(q=>(!rank||q.rank.includes(rank))&&(!topicFilter||topicFilter==='all'||q.topic===topicFilter));
+  if(pool.length<n)pool=QUESTIONS.filter(q=>!rank||q.rank.includes(rank));
+  if(pool.length<n)pool=QUESTIONS.slice();
+  const a=pool.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a.slice(0,Math.min(n,a.length));
+}
+const fmtS=s=>`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+function runQuiz(el,opts){
+  const qs=opts.questions||pickQuestions(opts.count,opts.rank,opts.topic);let idx=0,score=0,answered=false;const results=[];
+  const timed=opts.timed;let remain=(opts.count||qs.length)*60;let timer=null;
+  function header(){return `<div style="display:flex;justify-content:space-between;align-items:center"><div class="eyebrow">${opts.title} · ${opts.rank}</div>
+    <div class="mono" style="color:var(--text-dim)">${idx+1} / ${qs.length}${timed?` · <span id="qtime" style="color:var(--amber)">${fmtS(remain)}</span>`:''}</div></div>
+    <div class="progressbar"><i style="width:${idx/qs.length*100}%"></i></div>`;}
+  function draw(){const q=qs[idx];answered=false;
+    el.innerHTML=`<div class="view qwrap"><div class="page-head"><h2>${opts.title}</h2></div>
+      <div class="qcard">${header()}<span class="pill pill--dim">${topicShort(q.topic)}</span>
+        <div class="qtext">${esc(q.q)}</div><div id="choices">${q.choices.map((c,i)=>`<div class="choice" data-i="${i}"><span class="mk">${'ABCD'[i]}</span><span>${esc(c)}</span></div>`).join('')}</div>
+        <div id="exp"></div></div>
+      <div class="btnrow" style="justify-content:flex-end"><button class="btn btn--red" id="qnext" disabled>${idx===qs.length-1?'Finish':'Next ›'}</button></div></div>`;
+    if(timed)$('#qtime',el)&&startTimer();
+    $$('.choice',el).forEach(ch=>ch.onclick=()=>{if(answered)return;answered=true;const pick=+ch.dataset.i;const correct=pick===q.answer;
+      if(correct)score++;results.push({q,pick,correct});recordAnswer(q.topic,correct);
+      $$('.choice',el).forEach((c,i)=>{if(i===q.answer)c.classList.add('correct');if(i===pick&&!correct)c.classList.add('wrong');c.style.pointerEvents='none';});
+      $('#exp',el).innerHTML=`<div class="explain"><b style="color:${correct?'var(--green)':'#ff6b70'}">${correct?'Correct.':'Not quite.'}</b> ${esc(q.explain)}</div>`;
+      $('#qnext',el).disabled=false;});
+    $('#qnext',el).onclick=()=>{if(idx===qs.length-1){finish();}else{idx++;draw();}};
+  }
+  function startTimer(){clearInterval(timer);timer=setInterval(()=>{remain--;const t=$('#qtime',el);if(t)t.textContent=fmtS(remain);if(remain<=0){clearInterval(timer);finish();}},1000);}
+  function finish(){clearInterval(timer);if(opts.markDay)markQuizDay();
+    const pct=Math.round(score/qs.length*100);const pass=pct>=70;
+    el.innerHTML=`<div class="view qwrap"><div class="page-head"><h2>${opts.title} — Results</h2></div>
+      <div class="panel" style="text-align:center;padding:26px"><div style="display:flex;justify-content:center;margin-bottom:6px">${ringSVG(score/qs.length,'SCORE',150)}</div>
+        <div class="signage" style="font-size:22px;color:${pass?'var(--green)':'var(--red)'}">${score} / ${qs.length} — ${pct}% ${pass?'· PASS':'· below 70%'}</div>
+        <p style="color:var(--text-dim)">DCAS multiple-choice exams require at least 70% to pass.</p>
+        <div class="btnrow" style="justify-content:center">${opts.saveable?`<button class="btn btn--red" id="again">New set (regenerate)</button>`:`<button class="btn btn--red" id="again">Try another set</button>`}<a class="btn" href="#dashboard">Dashboard</a></div></div>
+      <div class="section"><div class="section__title"><h3>Review</h3><span class="rule"></span></div>
+        ${results.map((r,i)=>`<div class="qcard"><div class="qtext" style="font-size:14px">${i+1}. ${esc(r.q.q)}</div>
+          <div class="explain" style="border-color:${r.correct?'var(--green)':'var(--red)'}"><b>${r.correct?'✓':'✗'} Answer:</b> ${esc(r.q.choices[r.q.answer])}. ${esc(r.q.explain)}</div></div>`).join('')}
+      </div></div>`;
+    $('#again',el).onclick=()=>{if(opts.saveable){opts.questions=null;}runQuiz(el,opts);};
+  }
+  draw();
+}
+function viewPractice(el){
+  const saved=savedTests();
+  el.innerHTML=`<div class="view"><div class="page-head"><h2>Practice Test</h2><p>Build a timed, scored set in the DCAS computer-based format (70% to pass). Save a test's blueprint to reload or regenerate a fresh set of questions from it anytime.</p></div>
+    ${sampleNotice}
+    <div class="grid g2" style="grid-template-columns:1fr 1fr">
+      <div class="panel"><div class="section__title" style="margin-top:0"><h3>New test</h3><span class="rule"></span></div>
+        <label class="fld"><span class="k">Topic</span><select id="ptTopic"><option value="all">All topics</option>${TOPICS.map(t=>`<option value="${t.id}">${t.label}</option>`).join('')}</select></label>
+        <label class="fld"><span class="k">Number of questions</span><select id="ptCount"><option>10</option><option>20</option><option>30</option></select></label>
+        <label class="fld"><span class="k">Timed?</span><select id="ptTimed"><option value="yes">Yes — 1 min / question</option><option value="no">No — untimed</option></select></label>
+        <label class="fld"><span class="k">Save this test blueprint as… (optional)</span><input id="ptName" placeholder="e.g. HAZMAT drill — 20 q"></label>
+        <div class="btnrow"><button class="btn btn--red" id="ptStart">Start test</button><button class="btn" id="ptSave">Save blueprint</button></div>
+      </div>
+      <div class="panel"><div class="section__title" style="margin-top:0"><h3>Saved tests</h3><span class="rule"></span><span class="tag">reload or regenerate</span></div>
+        <div id="ptSaved"></div></div>
+    </div></div>`;
+  const cfg=()=>({title:'Practice Test',rank:RANK,topic:$('#ptTopic',el).value,count:+$('#ptCount',el).value,timed:$('#ptTimed',el).value==='yes',saveable:true});
+  $('#ptStart',el).onclick=()=>runQuiz(el,cfg());
+  $('#ptSave',el).onclick=()=>{const name=$('#ptName',el).value.trim()||`${topicShort($('#ptTopic',el).value==='all'?'command':$('#ptTopic',el).value)} · ${$('#ptCount',el).value} q`;
+    saveTest({id:uid(),name,rank:RANK,topic:$('#ptTopic',el).value,count:+$('#ptCount',el).value,timed:$('#ptTimed',el).value==='yes',created:todayKey()});drawSaved();};
+  function drawSaved(){const list=savedTests();
+    $('#ptSaved',el).innerHTML=list.length?list.map(t=>`<div class="session"><span class="dot" style="background:var(--red)"></span>
+      <span class="what">${esc(t.name)}</span><span class="mod pill pill--dim">${t.count} q · ${t.timed?'timed':'untimed'} · ${rankShort(t.rank)}</span>
+      <button class="btn btn--ghost" data-run="${t.id}">Run ›</button><button class="iconbtn" data-del="${t.id}" style="width:30px;height:30px" title="Delete">×</button></div>`).join('')
+      :'<div class="empty">No saved tests yet. Build one and click <b>Save blueprint</b> — you can regenerate a fresh question set from it whenever you want.</div>';
+    $$('[data-run]',el).forEach(b=>b.onclick=()=>{const t=savedTests().find(x=>x.id===b.dataset.run);runQuiz(el,{title:'Practice: '+t.name,rank:t.rank,topic:t.topic,count:t.count,timed:t.timed,saveable:true});});
+    $$('[data-del]',el).forEach(b=>b.onclick=()=>{deleteTest(b.dataset.del);drawSaved();});
+  }
+  drawSaved();
+}
+function viewQuiz(el){
+  const done=(progress().quizDays||[]).includes(todayKey());
+  el.innerHTML=`<div class="view"><div class="page-head"><h2>Daily Quiz</h2><p>Pick a length and go. Completing any daily quiz keeps your streak alive and builds topic coverage.</p></div>
+    ${done?`<div class="panel" style="max-width:560px;text-align:center;padding:22px"><div class="signage" style="font-size:20px;color:var(--green)">✓ Completed today</div>
+      <p style="color:var(--text-dim)">Streak: <b class="mono" style="color:var(--amber)">${streak()}</b> days. Come back tomorrow — or run extra practice below.</p></div>`:''}
+    <div class="panel" style="max-width:560px"><div class="section__title" style="margin-top:0"><h3>Choose length</h3><span class="rule"></span></div>
+      <div class="tiles" style="grid-template-columns:repeat(3,1fr)">
+        <a class="tile" data-n="3"><h4>Quick 3</h4><p>~2 min warm-up</p></a>
+        <a class="tile" data-n="5"><h4>Daily 5</h4><p>The standard streak-builder</p></a>
+        <a class="tile" data-n="10"><h4>Deep 10</h4><p>A fuller review session</p></a>
+      </div>
+      <label class="fld" style="margin-top:16px"><span class="k">Topic</span><select id="dqTopic"><option value="all">All topics</option>${TOPICS.map(t=>`<option value="${t.id}">${t.label}</option>`).join('')}</select></label>
+    </div></div>`;
+  $$('[data-n]',el).forEach(t=>t.onclick=()=>runQuiz(el,{title:'Daily Quiz',rank:RANK,topic:$('#dqTopic',el).value,count:+t.dataset.n,timed:false,markDay:true}));
+}
+
+/* ---------- Scenarios ---------- */
+function viewScenarios(el){
+  const list=SCENARIOS.filter(s=>!s.rank||s.rank===RANK||RANKS.indexOf(RANK)>=RANKS.indexOf(s.rank));
+  el.innerHTML=`<div class="view"><div class="page-head"><h2>Scenario Questions</h2>
+    <p>Situational judgment prompts like the officer-decision items on promotion exams. Think it through, then reveal the key points and a model response. Want a novel scenario? Generate one with the Study Assistant.</p></div>
+    ${sampleNotice}
+    ${(list.length?list:SCENARIOS).map((s,i)=>`<div class="panel" style="margin-bottom:14px">
+      <div class="section__title" style="margin-top:0"><span class="pill pill--cyan">${s.rank}</span><span class="pill pill--dim">${topicShort(s.topic)}</span><span class="rule"></span></div>
+      <p style="font-size:15px;margin:2px 0 14px">${esc(s.prompt)}</p>
+      <button class="btn" data-i="${i}">Reveal key points ▾</button>
+      <div class="reveal" data-r="${i}" style="display:none;margin-top:12px">
+        <div class="eyebrow">What graders look for</div>
+        <ul style="margin:8px 0 12px;color:var(--text-dim);line-height:1.7">${s.keyPoints.map(k=>`<li>${esc(k)}</li>`).join('')}</ul>
+        <div class="explain">${esc(s.model)}</div></div></div>`).join('')}</div>`;
+  $$('.btn[data-i]',el).forEach(b=>b.onclick=()=>{const r=$(`.reveal[data-r="${b.dataset.i}"]`,el);const open=r.style.display!=='none';r.style.display=open?'none':'block';b.textContent=open?'Reveal key points ▾':'Hide key points ▴';});
+}
+
+/* ---------- Study Assistant (AI, grounded in the user's material) ---------- */
+function viewAssistant(el){
+  const chat=Store.get('chatLog',[]);
+  el.innerHTML=`<div class="view"><div class="page-head"><h2>Study Assistant</h2>
+    <p>Ask a question and get an answer grounded in your registered material and study notes — plus practice questions, plain-English explanations, or a fresh scenario on request.</p></div>
+    <div class="notice notice--ai"><span>✦</span><div>${ragOn()?'<b>Manuals backend connected.</b> Answers are retrieved from your ingested reference manuals and cite the source passages.':(RANK==='Lieutenant'?'This prototype bundles the <b>Lieutenant manual</b>: the assistant searches it and answers with page citations. Only the LT manual is loaded — other ranks fall back to general study notes.':'Only the <b>Lieutenant manual</b> is loaded in this prototype. Switch the rank to <b>Lieutenant</b> for manual-cited answers.')} It can be wrong — always confirm against the source publication.</div></div>
+    <div class="btnrow" style="margin-bottom:12px">
+      <button class="btn btn--ghost" data-quick="Explain flashover to me like I'm new to the fire service.">Explain simply</button>
+      <button class="btn btn--ghost" data-quick="Write me 3 practice questions on incident command for the ${RANK} exam, with answers.">Make practice Qs</button>
+      <button class="btn btn--ghost" data-quick="Give me a realistic FDNY decision-making scenario for a ${RANK} and what graders would look for.">New scenario</button>
+      <button class="btn btn--ghost" id="chatClear" style="margin-left:auto">Clear chat</button>
+    </div>
+    <div class="chat"><div class="chat__log" id="chatLog"></div>
+      <div class="chat__form"><textarea id="chatIn" placeholder="Ask about any topic in your material…"></textarea>
+        <button class="btn btn--violet" id="chatSend">Send</button></div></div></div>`;
+  const log=$('#chatLog',el);
+  function render(){
+    log.innerHTML=(chat.length?chat:[{role:'ai',text:'Ask me anything about your study material. For example: “What are the priorities for a first-due engine at a private dwelling fire?”'}])
+      .map(m=>`<div class="msg ${m.role==='me'?'me':'ai'}"><div class="msg__av">${m.role==='me'?'YOU':'AI'}</div><div class="msg__body">${esc(m.text)}${m.src?`<div class="src">${esc(m.src)}</div>`:''}</div></div>`).join('');
+    log.scrollTop=log.scrollHeight;
+  }
+  render();
+  async function send(text){
+    if(!text.trim())return;
+    chat.push({role:'me',text});Store.set('chatLog',chat);render();
+    log.insertAdjacentHTML('beforeend',`<div class="msg ai" id="pending"><div class="msg__av">AI</div><div class="msg__body"><span class="typing"><i></i><i></i><i></i></span></div></div>`);
+    log.scrollTop=log.scrollHeight;
+    const sys=`You are a study assistant for FDNY officers preparing for the ${RANK} promotion exam. Answer ONLY from the knowledge context and any retrieved source passages provided; if it isn't covered there, say so and suggest which publication to check. Be concise, accurate, and exam-focused. When asked, produce practice questions with clearly marked answers, plain-English explanations, or realistic decision-making scenarios with grader key-points. Never invent official FDNY procedure you can't support from the context.\n\nKNOWLEDGE CONTEXT:\n${knowledgeContext()}`;
+    const history=chat.slice(-8).map(m=>({role:m.role==='me'?'user':'assistant',content:m.text}));
+    try{
+      const res=await callClaudeSmart(history,sys,{retrievalQuery:text,maxTokens:1400});
+      $('#pending',el)&&$('#pending',el).remove();
+      const src=res.sources&&res.sources.length
+        ?'Sources: '+res.sources.map(s=>s.title||s).join('; ')
+        :(ragOn()?'No matching passages found in the ingested manuals — answer may be limited.'
+          :(RANK==='Lieutenant'&&localManualReady()?'No matching passage found in the LT manual for this — answer may be limited; verify against the source.'
+            :'Grounded in general study notes. Verify against the source publication.'));
+      chat.push({role:'ai',text:res.text||'(no response)',src});
+      Store.set('chatLog',chat);render();
+    }catch(err){
+      $('#pending',el)&&$('#pending',el).remove();
+      const msg=err.message==='AUTH'
+        ?(ragOn()?'The backend rejected the request (check the App token in Settings matches your APP_TOKEN).':'I need an Anthropic API key to answer here. Open Settings (gear, top-right) and paste your key — it stays in your browser. Inside the Claude preview it works without one.')
+        :'I couldn\'t reach the AI service just now ('+esc(err.message)+'). Check your backend URL / key in Settings.';
+      chat.push({role:'ai',text:msg});Store.set('chatLog',chat);render();
+    }
+  }
+  $('#chatSend',el).onclick=()=>{const v=$('#chatIn',el).value;$('#chatIn',el).value='';send(v);};
+  $('#chatIn',el).addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#chatSend',el).click();}});
+  $$('[data-quick]',el).forEach(b=>b.onclick=()=>send(b.dataset.quick));
+  $('#chatClear',el).onclick=()=>{chat.length=0;Store.set('chatLog',chat);render();};
+}
+
+/* ---------- Podcast Studio (chapters/books → episodes up to ~1hr) ---------- */
+let POD={utters:[],idx:0,playing:false};
+function viewPodcast(el){
+  el.innerHTML=`<div class="view"><div class="page-head"><h2>Podcast Studio</h2>
+    <p>Turn topics, chapters, or a whole pasted book into a listenable episode — narrated in your browser. Pick a length up to ~60 minutes and an explainer style; the studio scripts it and reads it aloud with play, pause, speed, and voice controls.</p></div>
+    <div class="notice notice--ai"><span>✦</span><div>${ragOn()?'<b>Manuals backend connected.</b> Leave the source box empty and the studio scripts the episode from your ingested manuals for the chosen topics.':(RANK==='Lieutenant'?'This prototype bundles the <b>Lieutenant manual</b>: leave the source box empty and the studio scripts the episode from the manual for your chosen topics.':'Paste chapter text below, or switch to the <b>Lieutenant</b> rank to script from the bundled LT manual.')} Without AI it still assembles an episode from the built-in topic notes so auditory learners always have something to play.</div></div>
+    <div class="grid g2" style="grid-template-columns:1fr 1fr">
+      <div class="panel">
+        <span class="k" style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-faint);margin-bottom:8px">Source topics (pick one or more)</span>
+        <div class="chips" id="podTopics">${TOPICS.filter(t=>TOPIC_NOTES[t.id]).map(t=>`<span class="chip" data-t="${t.id}">${t.short}</span>`).join('')}</div>
+        <label class="fld" style="margin-top:14px"><span class="k">Paste a chapter or book (optional — powers a deep AI episode)</span>
+          <textarea id="podSource" placeholder="Paste chapter text from your authorized publication here. The studio will turn it into a narrated episode that explains it in plain English."></textarea></label>
+        <div class="grid g2">
+          <label class="fld"><span class="k">Rank focus</span><select id="podRank">${RANKS.map(r=>`<option ${r===RANK?'selected':''}>${r}</option>`).join('')}</select></label>
+          <label class="fld"><span class="k">Episode length</span><select id="podLen">
+            <option value="5">~5 min brief</option><option value="15" selected>~15 min standard</option>
+            <option value="30">~30 min deep dive</option><option value="60">~60 min full session</option></select></label>
+        </div>
+        <label class="fld"><span class="k">Style</span><select id="podStyle">
+          <option value="simple">Explain complex topics in simple terms</option>
+          <option value="exam">Exam-drill: hit the testable points</option>
+          <option value="story">Scenario storytelling with lessons</option></select></label>
+        <div class="btnrow"><button class="btn btn--red" id="podGen">Generate episode</button><span id="podStatus" style="color:var(--text-dim);font-size:12px"></span></div>
+      </div>
+      <div class="panel">
+        <div class="section__title" style="margin-top:0"><h3>Episode</h3><span class="rule"></span><span class="tag" id="podMeta">—</span></div>
+        <div class="pod-controls" id="podCtl" style="display:none">
+          <button class="btn btn--red" id="podPlay">▶ Play</button>
+          <button class="btn" id="podStop">■ Stop</button>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-dim)">Speed
+            <input type="range" id="podRate" min="0.7" max="1.3" step="0.1" value="1" style="width:110px"></label>
+          <select id="podVoice" style="max-width:170px"></select>
+        </div>
+        <div class="pod-script" id="podScript"><div class="empty">Pick topics (or paste a chapter), choose a length, and generate an episode.</div></div>
+        ${window.speechSynthesis?'':'<p style="color:var(--amber);font-size:12px;margin-top:10px">Your browser doesn\'t expose speech synthesis — the script still generates for reading.</p>'}
+      </div>
+    </div></div>`;
+  $('#podTopics',el).onclick=e=>{const c=e.target.closest('.chip');if(c)c.classList.toggle('on');};
+  function loadVoices(){if(!window.speechSynthesis)return;const vs=speechSynthesis.getVoices();const sel=$('#podVoice',el);if(!sel)return;
+    sel.innerHTML=vs.map((v,i)=>`<option value="${i}">${v.name.slice(0,26)}${v.lang?' ('+v.lang+')':''}</option>`).join('')||'<option>Default</option>';}
+  if(window.speechSynthesis){speechSynthesis.onvoiceschanged=loadVoices;loadVoices();}
+  $('#podGen',el).onclick=async()=>{
+    const topics=$$('.chip.on',el).map(c=>c.dataset.t);
+    const source=$('#podSource',el).value.trim();
+    if(!topics.length&&!source){$('#podScript',el).innerHTML='<div class="empty">Choose at least one topic or paste some source text.</div>';return;}
+    const rank=$('#podRank',el).value,minutes=+$('#podLen',el).value,style=$('#podStyle',el).value;
+    $('#podStatus',el).textContent='Scripting…';$('#podGen',el).disabled=true;
+    let paras;
+    try{
+      paras=await buildEpisodeAI(topics,source,rank,minutes,style);
+      $('#podStatus',el).textContent='AI episode ready.';
+    }catch(err){
+      paras=buildEpisodeLocal(topics,rank,minutes);
+      $('#podStatus',el).textContent=err.message==='AUTH'?'No AI key — built a shorter episode from study notes. Add a key in Settings for full-length AI episodes.':'AI unavailable — built from study notes.';
+    }
+    $('#podGen',el).disabled=false;
+    $('#podMeta',el).textContent=`${(topics.map(topicShort).join(' · ')||'Custom source')} · ${rank} · ~${minutes}m`;
+    $('#podScript',el).innerHTML=paras.map((p,i)=>`<p data-p="${i}" class="${/^—|^\[/.test(p)?'seg-head':''}">${esc(p)}</p>`).join('');
+    $('#podCtl',el).style.display='flex';preparePod(paras,el);
+  };
+}
+async function buildEpisodeAI(topics,source,rank,minutes,style){
+  const wordTarget=minutes*130; // ~130 spoken wpm
+  const styleInstr={simple:'Explain complex ideas in plain, everyday language a new firefighter would understand. Use analogies.',
+    exam:'Focus tightly on what is testable on the promotion exam. Emphasize definitions, sequences, and decision points.',
+    story:'Frame the material through realistic fireground scenarios, drawing out the lesson each time.'}[style];
+  const topicNotes=topics.map(t=>`${topicLabel(t)}:\n`+(TOPIC_NOTES[t]||[]).join('\n')).join('\n\n');
+  const sys=`You are scripting a single-host audio study episode for FDNY ${rank} exam candidates. Write natural spoken narration (no stage directions, no "host:" labels). Target about ${wordTarget} words for a ${minutes}-minute episode. ${styleInstr} Open with a short welcome, cover the material in a logical order with clear verbal transitions, insert brief "quick check" questions the listener can answer in their head, and close with a recap and encouragement. Output ONLY the narration as plain paragraphs separated by blank lines. Mark each major segment with a line beginning "— " followed by the segment title.`;
+  const user=(source?`PRIMARY SOURCE TEXT (script the episode chiefly from this, in plain English):\n${source.slice(0,12000)}\n\n`:'')+
+    (topicNotes?`SUPPORTING STUDY NOTES:\n${topicNotes}\n\n`:'')+
+    `Write the ${minutes}-minute episode now.`;
+  const retrievalQuery=source?source.slice(0,400):`${topics.map(topicLabel).join(', ')} — key exam points for ${rank}`;
+  const res=await callClaudeSmart([{role:'user',content:user}],sys,{retrievalQuery,topic:topics[0]||null,maxTokens:Math.min(8000,Math.round(wordTarget*1.8))});
+  const paras=(res.text||'').split(/\n{2,}/).map(s=>s.trim()).filter(Boolean);
+  return paras.length?paras:buildEpisodeLocal(topics,rank,minutes);
+}
+function buildEpisodeLocal(topics,rank,minutes){
+  const per=minutes<=5?2:minutes<=15?3:5;const list=topics.length?topics:['command'];
+  const out=[`Welcome to your F D N Y promotion prep episode, tailored for the rank of ${rank}. Today we're covering ${list.map(topicLabel).join(', ')}. Let's get into it.`];
+  list.forEach(t=>{out.push(`— ${topicLabel(t)}`);
+    (TOPIC_NOTES[t]||[]).slice(0,per).forEach(n=>out.push(n));
+    out.push(`Quick check as you listen: how would that apply on your next tour as a ${rank}?`);});
+  out.push(`That wraps this episode. Review the flashcards on these topics, then take a short quiz to lock it in. Stay safe, and good luck on the exam.`);
+  return out;
+}
+function preparePod(paras,el){
+  if(!window.speechSynthesis){return;}
+  speechSynthesis.cancel();POD={utters:[],idx:0,playing:false};
+  const rate=+$('#podRate',el).value||1;const vi=+($('#podVoice',el).value||0);const vs=speechSynthesis.getVoices();
+  paras.forEach((p,i)=>{const clean=p.replace(/^—\s*/,'');const u=new SpeechSynthesisUtterance(clean);u.rate=rate;if(vs[vi])u.voice=vs[vi];
+    u.onstart=()=>{$$('#podScript p',el).forEach(x=>x.classList.remove('now'));const cur=$(`#podScript p[data-p="${i}"]`,el);if(cur){cur.classList.add('now');cur.scrollIntoView({block:'nearest'});}};
+    u.onend=()=>{if(i===paras.length-1){POD.playing=false;$('#podPlay',el).textContent='▶ Play';$$('#podScript p',el).forEach(x=>x.classList.remove('now'));}};
+    POD.utters.push(u);});
+  const play=$('#podPlay',el),stop=$('#podStop',el);
+  play.onclick=()=>{if(POD.playing){speechSynthesis.pause();POD.playing=false;play.textContent='▶ Resume';}
+    else{if(speechSynthesis.paused){speechSynthesis.resume();}else{POD.utters.forEach(u=>speechSynthesis.speak(u));}POD.playing=true;play.textContent='⏸ Pause';}};
+  stop.onclick=()=>{speechSynthesis.cancel();POD.playing=false;play.textContent='▶ Play';$$('#podScript p',el).forEach(x=>x.classList.remove('now'));};
+  $('#podRate',el).onchange=()=>preparePod(paras,el);$('#podVoice',el).onchange=()=>preparePod(paras,el);
+}
+
+/* ---------- Diagrams & Video ---------- */
+function viewDiagrams(el){
+  el.innerHTML=`<div class="view"><div class="page-head"><h2>Diagrams & Video</h2>
+    <p>Automated visual explainers for complex topics, plus slots for short videos the FDNY can embed to break down hard concepts. Visual learners: start here.</p></div>
+    ${sampleNotice}
+    <div class="diagram-card"><h4>Incident Command — span of control</h4><div class="cap">As an incident grows, command delegates through Divisions and Groups to keep 3–7 reports per supervisor.</div>${diagICS()}</div>
+    <div class="diagram-card"><h4>Fireground priorities — RECEO-VS</h4><div class="cap">The classic order of tactical priorities. Animated to show sequence.</div>${diagRECEO()}</div>
+    <div class="diagram-card"><h4>Fire growth stages</h4><div class="cap">Ignition → growth → flashover → fully developed → decay. Watch the flashover threshold.</div>${diagFireCurve()}</div>
+    <div class="section"><div class="section__title"><h3>Video library</h3><span class="rule"></span><span class="tag">embed your own</span></div>
+      <div class="grid g2" id="vidGrid">
+        <div><div class="video-slot">${icon('diagrams')}<div>Add a short clip on <b>ventilation coordination</b></div><div style="font-size:11px">Set the URL in content/manifest.json</div></div></div>
+        <div><div class="video-slot">${icon('diagrams')}<div>Add a short clip on <b>forcible entry</b></div><div style="font-size:11px">Set the URL in content/manifest.json</div></div></div>
+      </div>
+      <p style="color:var(--text-faint);font-size:12px;margin-top:10px">Tip: keep clips under ~3 minutes and tag them by topic so the study plan can surface them for visual learners.</p></div></div>`;
+  animRECEO(el);animFireCurve(el);
+  loadManifest().then(m=>{ if(m&&Array.isArray(m.videos)&&m.videos.length){
+    $('#vidGrid',el).innerHTML=m.videos.map(v=>`<div><div style="aspect-ratio:16/9;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line)">
+      <iframe width="100%" height="100%" src="${esc(v.embed||v.url||'')}" title="${esc(v.title||'')}" frameborder="0" allowfullscreen style="border:0"></iframe></div>
+      <div style="font-size:12px;color:var(--text-dim);margin-top:6px">${esc(v.title||'')} · ${topicLabel(v.topic||'')}</div></div>`).join(''); } });
+}
+function diagICS(){return `<svg viewBox="0 0 640 220" style="width:100%;height:auto">
+  ${icsBox(260,10,120,'Incident Cmd','var(--red)')}
+  <line x1="320" y1="52" x2="320" y2="78" stroke="#33404F"/>
+  <line x1="140" y1="78" x2="500" y2="78" stroke="#33404F"/>
+  ${['Ops','Planning','Logistics'].map((t,i)=>{const x=90+i*190;return `<line x1="${x+60}" y1="78" x2="${x+60}" y2="96" stroke="#33404F"/>`+icsBox(x,96,120,t,'var(--amber)');}).join('')}
+  <line x1="150" y1="138" x2="150" y2="158" stroke="#33404F"/>
+  ${['Div A','Div B','Search Grp'].map((t,i)=>icsBox(40+i*100,158,90,t,'var(--cyan)')).join('')}
+</svg>`;}
+function icsBox(x,y,w,t,c){return `<g><rect x="${x}" y="${y}" width="${w}" height="34" rx="6" fill="var(--bg-elev-2)" stroke="${c}"/><text x="${x+w/2}" y="${y+22}" text-anchor="middle" fill="var(--text)" font-family="Oswald" font-size="13" letter-spacing="1">${t}</text></g>`;}
+function diagRECEO(){const items=[['R','Rescue'],['E','Exposures'],['C','Confinement'],['E','Extinguish'],['O','Overhaul'],['V','Vent'],['S','Salvage']];
+  return `<svg viewBox="0 0 700 90" style="width:100%;height:auto" id="receoSvg">${items.map((it,i)=>{const x=8+i*98;
+    return `<g class="receo-step" data-s="${i}" opacity="0.35"><rect x="${x}" y="20" width="86" height="50" rx="8" fill="var(--bg-elev-2)" stroke="var(--red)"/>
+      <text x="${x+43}" y="45" text-anchor="middle" fill="var(--red)" font-family="Oswald" font-weight="700" font-size="20">${it[0]}</text>
+      <text x="${x+43}" y="62" text-anchor="middle" fill="var(--text-dim)" font-family="Inter" font-size="10">${it[1]}</text></g>`;}).join('')}</svg>`;}
+function animRECEO(el){const steps=$$('#receoSvg .receo-step',el);if(!steps.length)return;let i=0;
+  const t=setInterval(()=>{steps.forEach((s,j)=>s.setAttribute('opacity',j<=i?'1':'0.35'));i++;if(i>steps.length){i=0;}},550);
+  el._receoTimer&&clearInterval(el._receoTimer);el._receoTimer=t;}
+function diagFireCurve(){return `<svg viewBox="0 0 640 240" style="width:100%;height:auto" id="fireSvg">
+  <line x1="40" y1="200" x2="620" y2="200" stroke="#33404F"/><line x1="40" y1="20" x2="40" y2="200" stroke="#33404F"/>
+  <text x="330" y="228" text-anchor="middle" fill="#5D6B7E" font-size="11" font-family="Inter">Time →</text>
+  <text x="16" y="110" fill="#5D6B7E" font-size="11" font-family="Inter" transform="rotate(-90 16 110)">Temperature →</text>
+  <path id="fireCurve" d="M40 195 C 160 190, 220 150, 300 70 C 340 35, 380 40, 460 55 C 540 68, 590 150, 610 195" fill="none" stroke="var(--amber)" stroke-width="2.5"/>
+  <line x1="300" y1="20" x2="300" y2="200" stroke="var(--red)" stroke-dasharray="4 4"/>
+  <text x="306" y="34" fill="var(--red)" font-size="11" font-family="Oswald" letter-spacing="1">FLASHOVER</text>
+  <text x="120" y="185" fill="#5D6B7E" font-size="10">Growth</text><text x="380" y="40" fill="#5D6B7E" font-size="10">Fully developed</text><text x="560" y="185" fill="#5D6B7E" font-size="10">Decay</text>
+  <circle id="fireDot" r="5" fill="var(--red)"><animate attributeName="opacity" values="1;0.4;1" dur="1.2s" repeatCount="indefinite"/></circle>
+</svg>`;}
+function animFireCurve(el){const path=$('#fireCurve',el),dot=$('#fireDot',el);if(!path||!dot)return;const len=path.getTotalLength();let t=0;
+  const iv=setInterval(()=>{t=(t+0.006)%1;const pt=path.getPointAtLength(t*len);dot.setAttribute('cx',pt.x);dot.setAttribute('cy',pt.y);},30);
+  el._fireTimer&&clearInterval(el._fireTimer);el._fireTimer=iv;}
+
+/* ---------- Acronyms & Mnemonics (built-in + custom builder) ---------- */
+function viewAcronyms(el){
+  el.innerHTML=`<div class="view"><div class="page-head"><h2>Acronyms & Mnemonics</h2>
+    <p>Memory hooks for complex, high-pressure sequences — plus a builder for your own. Search built-ins, then create and save custom mnemonics to the right chapter so they show up whenever you study that topic.</p></div>
+
+    <div class="panel" style="margin-bottom:20px"><div class="section__title" style="margin-top:0"><h3>Build your own</h3><span class="rule"></span><span class="tag">saved to this device</span></div>
+      <div class="grid g2" style="grid-template-columns:1fr 1fr">
+        <div>
+          <label class="fld"><span class="k">Acronym / phrase</span><input id="mnAcr" placeholder="e.g. WALLACE WAS HOT"></label>
+          <label class="fld"><span class="k">Save to chapter / topic</span><select id="mnTopic">${TOPICS.map(t=>`<option value="${t.id}">${t.label}</option>`).join('')}</select></label>
+          <label class="fld"><span class="k">When to use it</span><input id="mnUse" placeholder="e.g. Size-up checklist I actually remember"></label>
+        </div>
+        <div>
+          <label class="fld"><span class="k">Expansion — one line per letter/word</span>
+            <textarea id="mnExp" style="min-height:150px" placeholder="W = Water supply&#10;A = Area&#10;L = Life hazard&#10;..."></textarea></label>
+          <div class="btnrow"><button class="btn btn--red" id="mnSave">Save mnemonic</button><span id="mnMsg" style="color:var(--green);font-size:12px"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btnrow" style="margin-bottom:14px"><input id="acrSearch" placeholder="Search acronyms…" style="max-width:320px"><select id="acrFilter" style="max-width:220px"><option value="all">All topics</option>${TOPICS.map(t=>`<option value="${t.id}">${t.label}</option>`).join('')}</select></div>
+    <div id="mineWrap"></div>
+    <div class="section__title"><h3>Built-in library</h3><span class="rule"></span></div>
+    <div class="grid g2" id="acrList"></div></div>`;
+
+  function drawMine(){
+    const mine=customMnemonics();
+    const box=$('#mineWrap',el);
+    if(!mine.length){box.innerHTML='';return;}
+    box.innerHTML=`<div class="section__title"><h3>Your mnemonics</h3><span class="rule"></span><span class="tag">${mine.length}</span></div>
+      <div class="grid g2" style="margin-bottom:20px">${mine.map(m=>`<div class="acr"><h4>${esc(m.acr)}</h4>
+        <span class="pill pill--violet">${topicShort(m.topic)}</span>
+        <div class="exp">${m.exp.map(e=>`<span><b>${esc(e[0])}</b> ${esc(e[1])}</span>`).join('')}</div>
+        <div class="use">${esc(m.use||'')}</div>
+        <div class="owner"><button class="btn btn--ghost" data-del="${m.id}" style="padding:5px 11px">Delete</button></div></div>`).join('')}</div>`;
+    $$('[data-del]',box).forEach(b=>b.onclick=()=>{deleteMnemonic(b.dataset.del);drawMine();});
+  }
+  function drawBuiltin(){
+    const q=($('#acrSearch',el).value||'').toLowerCase();const tf=$('#acrFilter',el).value;
+    const items=ACRONYMS.filter(a=>(tf==='all'||a.topic===tf)&&(!q||a.acr.toLowerCase().includes(q)||a.use.toLowerCase().includes(q)||topicLabel(a.topic).toLowerCase().includes(q)));
+    $('#acrList',el).innerHTML=items.map(a=>`<div class="acr"><h4>${a.acr}</h4>
+      <span class="pill pill--dim">${topicShort(a.topic)}</span>
+      <div class="exp">${a.exp.map(e=>`<span><b>${e[0]}</b> ${e[1]}</span>`).join('')}</div>
+      <div class="use">${a.use}</div></div>`).join('')||'<div class="empty">No matches.</div>';
+  }
+  $('#mnSave',el).onclick=()=>{
+    const acr=$('#mnAcr',el).value.trim();const raw=$('#mnExp',el).value.trim();
+    if(!acr||!raw){$('#mnMsg',el).textContent='Add an acronym and at least one expansion line.';$('#mnMsg',el).style.color='#ff6b70';return;}
+    const exp=raw.split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{const m=l.split(/\s*[=\-–:]\s*/);return m.length>1?[m[0],m.slice(1).join(' ')]:[l.charAt(0),l];});
+    saveMnemonic({id:uid(),acr,topic:$('#mnTopic',el).value,use:$('#mnUse',el).value.trim(),exp});
+    $('#mnAcr',el).value='';$('#mnExp',el).value='';$('#mnUse',el).value='';
+    $('#mnMsg',el).style.color='var(--green)';$('#mnMsg',el).textContent='Saved.';drawMine();
+  };
+  $('#acrSearch',el).oninput=drawBuiltin;$('#acrFilter',el).onchange=drawBuiltin;
+  drawMine();drawBuiltin();
+}
+
+/* ---------- boot ---------- */
+$('#settingsBtn').onclick=openSettings;
+renderRank();renderNav();if(!location.hash)location.hash='#dashboard';
+loadManifest().then(()=>route());
+route();
+</script>
+</body>
+</html>
